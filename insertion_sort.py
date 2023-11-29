@@ -1,6 +1,4 @@
 def insertion_sort(array):
-    print(F"array={array} length={len(array)}")
-
     # array[0] is already "sorted" so we start with array[1]
     next_item_index=1
     while next_item_index < len(array):
