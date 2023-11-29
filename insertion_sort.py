@@ -1,3 +1,9 @@
+def merge_sort(array):
+    if len(array) <= 1:
+        return
+    mid = int(len(array/1))
+    # sort each half, then merge ..
+
 def insertion_sort(array):
     # array[0] is already "sorted" so we start with array[1]
     next_item_index=1
