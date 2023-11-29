@@ -5,15 +5,13 @@ def insertion_sort(array):
     next_item_index=1
     while next_item_index < len(array):
         item_to_insert = array[next_item_index]
-        print(F"next_item_index={next_item_index} "
-              F"item_to_insert={item_to_insert}")
         i = next_item_index-1
         while i >= 0 and array[i] > item_to_insert:
             array[i+1] = array[i]
-            print("after shift:", array)
             i -= 1
+        # assign to array[i+1] because we must increment i
+        # inside the loop
         array[i+1] = item_to_insert
-        print("after insertion:", array)
         next_item_index += 1
 
 
