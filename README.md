@@ -1,2 +1,2 @@
 # algorithms
-Code of algorithms course
+Code for algorithms course
