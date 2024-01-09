@@ -45,7 +45,7 @@ class Tree:
             # the tree was empty
             self.root = new_node
             return
-        if key > y.key:
+        if key >= y.key:
             y.right = new_node
         else:
             y.left = new_node
