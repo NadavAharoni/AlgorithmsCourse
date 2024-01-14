@@ -18,8 +18,8 @@ class Node:
             self.right.print()
 
     """
-    side: "left" if self is a left son, "right" is self is a right son
-    and "" (empty string) is self is root
+    side: "left" if self is a left son, "right" if self is a right son
+    and "" (empty string) if self is root
     """
     def print_indented(self, indent="", side=""):
         if self.right:
