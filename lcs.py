@@ -1,4 +1,4 @@
-from matrix2d import Matrix2D
+from table2d import Table2D
 
 recursive_lcs_counter=0
 recursive_lcs_memo_counter = 0
@@ -23,7 +23,7 @@ def recursive_lcs(x : list, y: list):
             lcs = lcs2
     return lcs
 
-def recursive_lcs_memo(x : list, y: list, m : Matrix2D):
+def recursive_lcs_memo(x : list, y: list, m : Table2D):
     global recursive_lcs_memo_counter
     recursive_lcs_memo_counter += 1
     # check if we already know the lcs for [len(x), len(y)]
@@ -67,7 +67,7 @@ class MemoCell:
         return F"{self.length, self.arrow}"
 
 
-def recursive_lcs_memo_2(x : list, y: list, m : Matrix2D):
+def recursive_lcs_memo_2(x : list, y: list, m : Table2D):
     global recursive_lcs_memo_counter_2
     recursive_lcs_memo_counter_2 += 1
     # check if we already know the lcs for [len(x), len(y)]
@@ -117,7 +117,7 @@ def main():
 
     global recursive_lcs_memo_counter
     recursive_lcs_memo_counter=0
-    memo = Matrix2D()
+    memo = Table2D()
     lcs = recursive_lcs_memo(X, Y, memo)
     print(F"result={lcs}")
     print(F"recursive_lcs_memo_counter={recursive_lcs_memo_counter}")
@@ -127,7 +127,7 @@ def main():
     # Y = ['B', 'D', 'C']
     global recursive_lcs_memo_counter_2
     recursive_lcs_memo_counter_2=0
-    memo_2 = Matrix2D(len(Y)+1, len(X)+1)
+    memo_2 = Table2D(len(Y)+1, len(X)+1)
     lcs = recursive_lcs_memo_2(X, Y, memo_2)
     print(F"result={lcs}")
     print(F"recursive_lcs_memo_counter={recursive_lcs_memo_counter_2}")

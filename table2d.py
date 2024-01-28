@@ -1,4 +1,4 @@
-class Matrix2D:
+class Table2D:
     def __init__(self, rows: int = 0, columns : int = 0, value = None):
         self.m = []
         self.m.extend([[] for _ in range(rows)])
@@ -30,10 +30,9 @@ class Matrix2D:
     def __str__(self) -> str:
         ret = ""
         line_num = 0
-        for i in self.m:
-            ret += F"{line_num}:"
-            for j in i:
-                ret += F"{j}, "
+        for row in self.m:
+            ret += F"{line_num}: | "
+            ret += " | ".join([str(i) for i in row])
             ret += "\n"
             line_num += 1
         return ret
