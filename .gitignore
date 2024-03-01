@@ -7,6 +7,9 @@ __pycache__/
 *.so
 
 c_sharp/sorting/obj/
+c_sharp/sorting/.vs/
+
+
 # Distribution / packaging
 .Python
 build/
