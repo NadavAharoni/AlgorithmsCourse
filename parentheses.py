@@ -1,22 +1,28 @@
 import sys
 from table2d import Table2D
 
+def list_cartesian_product(l1: list, l2: list) -> list:
+    if len(l1)==0 or len(l2)==0:
+        return []
+    ret = []
+    for item1 in l1:
+        for item2 in l2:
+            ret.append([item1, item2])
+    return ret
+
 def enumerate_parentheses(m):
     if len(m) <= 1:
         return m
     if len(m) <= 2:
         return [ m ]
     # else
-    p1_x_p2 = []
+    all_options = []
     for k in range(1, len(m)):
-        # print(F"k={k}, {m[:k]}, {m[k:]}")
         paren1 = enumerate_parentheses(m[:k])
         paren2 = enumerate_parentheses(m[k:])
-        # print(F"k={k}: paren1={paren1}, paren2={paren2},")
-        for p1 in paren1:
-            for p2 in paren2:
-                p1_x_p2.append([p1,p2])
-    return p1_x_p2
+        list_product_k = list_cartesian_product(paren1,paren2)
+        all_options += list_product_k
+    return all_options
 
 def paren_str(m) -> str:
     if type(m) is not list:
@@ -26,7 +32,7 @@ def paren_str(m) -> str:
     elif len(m) == 2:
         return F"({paren_str(m[0])}*{paren_str(m[1])})"
     assert(len(m) <= 2)
-    # following line is to prevent type errors
+    # the following line is to prevent type errors
     return ""
 
 
@@ -40,9 +46,8 @@ class ChainOrderCell:
 
 def matrix_chain_order(dimentions):
     n = len(dimentions)
+    # fill the table with zeros
     table = Table2D(n,n,ChainOrderCell(0,0))
-    for i in range(0,n):
-        table[i,i] = ChainOrderCell(0,0)
 
     for chain_length in range(2,n):
         print(F"chain_length={chain_length}")
@@ -61,16 +66,15 @@ def matrix_chain_order(dimentions):
 
 def main():
     matrix_dimentions = [30, 35, 15, 5, 10, 20 , 25]
-    # matrix_dimentions = [30, 35, 15, 5, 10]
     table = matrix_chain_order(matrix_dimentions)
     print(table)
-    return
+
     matrices = [ F"A{i}" for i in range(1,6) ]
     print(F"matrices={matrices}")
 
     p = enumerate_parentheses(matrices)
     print("-----------------")
-    print(p)
+    # print(p)
     i = 0
     for p1 in p:
         # print(F"p1={p1}")
