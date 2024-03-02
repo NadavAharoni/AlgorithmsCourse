@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+c_sharp/sorting/obj/
+c_sharp/sorting/.vs/
+c_sharp/sorting/bin/
+
+
 # Distribution / packaging
 .Python
 build/
