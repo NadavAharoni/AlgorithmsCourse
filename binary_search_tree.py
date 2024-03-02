@@ -47,6 +47,33 @@ class Node:
             # print(F"{self.key}, indent={indent}")
             self.left.print_indented(next_indent,side="left")
 
+    # previous version
+    def print_indented1(self, indent=""):
+        if self.right:
+            if self.parent and self.parent.right and self.parent.right == self:
+                self.right.print_indented1(indent[:-1]+"   ┃")
+            else:
+                self.right.print_indented1(indent+"    ┃")
+        else:
+            if self.left:
+                print(indent[:-1]+"   ┏⦻")
+
+        side_symbol=""
+        if self.parent:
+            if self.parent.left == self:
+                side_symbol="┗"
+            else:
+                side_symbol = "┏"
+        print(F"{indent[:-1]}{side_symbol}{self.key}:{self.count}")
+
+        if self.left:
+            self.left.print_indented1(indent[:-1]+"   ┃")
+        else:
+            if self.right:
+                print(indent[:-1]+"    ┗⦻")
+
+
+
     def depth(self) -> int:
         depth = 0
         if self.left:
@@ -66,28 +93,78 @@ class Node:
         return self
 
     def successor(self) -> Optional['Node']:
-        # exercise
-        return None
+        if self.right:
+            return self.right.min()
+        # else
+        # find the lowest ancestor of self whose left child is an ancestor of self
+        x = self
+        y = self.parent
+        while y and  x == y.right:
+            x = y
+            y = y.parent
+        return y
         
     def predecessor(self) -> Optional['Node']:
-        # exercise
-        return None
+        if self.left:
+            return self.left.max()
+        # else
+        # find the lowest ancestor of self whose right child is an ancestor of self
+        x = self
+        y = self.parent
+        while y and  x == y.left:
+            x = y
+            y = y.parent
+        return y
 
     def get_number_of_nodes(self) -> int:
-        # exercise
-        return 0
+        number_of_nodes : int = 1
+        if self.left:
+            number_of_nodes += self.left.get_number_of_nodes()
+        if self.right:
+            number_of_nodes += self.right.get_number_of_nodes()
+        return number_of_nodes
     
     def get_k_node(self, k : int) -> 'Node':
-        # exercise
-        return None
+        left_count = 0
+        if self.left:
+            left_count = self.left.get_number_of_nodes()
+
+        if left_count == k-1:
+            return self
+        # else
+        if left_count < k-1:
+            assert(self.right)
+            return self.right.get_k_node(k - left_count - 1)
+        else:
+            # left_count > k-1:
+            assert(self.left)
+            return self.left.get_k_node(k)
 
 class Tree:
     def __init__(self):
         self.root = None
 
     def search_or_insert(self, key:str) -> Node:
-        # exercise
-        return None
+        x = self.root
+        y : Optional[Node] = None
+        while x is not None:
+            y = x
+            if key == x.key:
+                return x
+            if key > x.key:
+                x = x.right
+            else:
+                x = x.left
+        new_node = Node(key)
+        if y is None:
+            # the tree was empty
+            self.root = new_node
+        elif key > y.key:
+            y.right = new_node
+        else:
+            y.left = new_node
+        new_node.parent = y
+        return new_node
 
     def insert(self, key:str):
         x = self.root
@@ -129,6 +206,11 @@ class Tree:
         if self.root:
             self.root.print_indented()
 
+    def print_indented1(self):
+        if self.root:
+            self.root.print_indented1()
+
+
     def depth(self):
         if self.root:
             return self.root.depth()
@@ -145,8 +227,11 @@ class Tree:
         return None
     
     def median(self) -> Optional[Node]:
-        # execrcise
-        return None
+        if self.root:
+            number_of_nodes = self.get_number_of_nodes()
+            return self.root.get_k_node(int(number_of_nodes / 2))
+        else:
+            return None
 
         
 def main():
@@ -159,8 +244,9 @@ def main():
         node.count += 1
 
     tree.print()
-    print("============\n")
+    print("============\n\n")
     tree.print_indented()
+    tree.print_indented1()
 
     name = "aaron"
     node = tree.search_or_insert(name)
