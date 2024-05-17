@@ -1,4 +1,4 @@
-def partition(array: list, first: int, last: int):
+def partition(array: list, first: int, last: int) -> int:
     print(F"partition: array: {array}")
     print(F"partition: first={first}, last={last}")
     pivot = array[first]
