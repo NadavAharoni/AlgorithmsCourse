@@ -44,6 +44,7 @@ def recursive_lcs_memo(x : list, y: list, m : Table2D):
         # note: in the next line, if we use lcs.append(last_x) then lcs itself
         # is changed which is a bug, since lcs is returned from the martix
         # and we end up changing another entry in the matrix
+        # instead we use lcs + [last_x] which creates a new list
         lcs = lcs + [last_x]
         m[len_x, len_y] = lcs
         return lcs
@@ -87,7 +88,6 @@ def recursive_lcs_memo_2(x : list, y: list, m : Table2D):
     if last_x == last_y:
         memo_cell = recursive_lcs_memo_2(x[0:-1], y[0:-1], m)
         new_memo_cell = MemoCell(memo_cell.length+1, "↖")
-        # print(F"inserting {new_memo_cell} in {len_y},{len_x}")
         m[len_y, len_x] = new_memo_cell
         return m[len_y, len_x]
     else:
@@ -99,8 +99,6 @@ def recursive_lcs_memo_2(x : list, y: list, m : Table2D):
         else:
             m[len_y, len_x] = MemoCell(memo_cell_2.length, "↑")
             return m[len_y, len_x]
-
-
 
 
 def main():
@@ -135,14 +133,19 @@ def main():
     # ======== print results ========
     Y = [' '] + Y
     X = [' '] + X
+    # fill the table with zeros
     for row_idx in range(len(Y)):
         for column_idx in range(len(X)):
             if not memo_2[row_idx, column_idx]:
                 memo_2[row_idx, column_idx] = MemoCell(0, ' ')
+
+    # print the sequence X as column headers
     print("   ", end='')
     for column_idx in range(len(X)):
         print(F"{X[column_idx]}   |", end='')
     print()
+
+    # print the rows of the table
     for row_idx in range(len(Y)):
         print(F"   ", end='')
         for column_idx in range(len(X)):
