@@ -178,6 +178,7 @@ class Tree:
                 x = x.right
             else:
                 x = x.left
+        
         new_node = Node(key)
         new_node.count = 1
         if y is None:
