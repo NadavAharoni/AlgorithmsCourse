@@ -1,2 +1,2 @@
-# algorithms
-Code for algorithms course
+# Algorithms
+Material for algorithms course
