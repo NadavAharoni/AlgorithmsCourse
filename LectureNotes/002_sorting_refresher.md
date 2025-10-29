@@ -1,10 +1,11 @@
 ---
 marp: true
+mermaid: true
 theme: default
 paginate: true
 header: "Algorithms Refresher — Sorting Algorithms"
 footer: "Algorithms Course"
-mermaid: true
+
 ---
 
 # 🧮 Algorithms Refresher  
@@ -50,21 +51,6 @@ for i = 1 to n-1:
 
 ---
 
-# 🖼️ Insertion Sort — Visualization
-
-```mermaid
-%%{init: {'theme': 'neutral'}}%%
-graph LR
-  A1[3 1 2 4] --> A2[1 3 2 4] --> A3[1 2 3 4]
-```
-
-Step-by-step:
-1. Insert `1` before `3` → `[1,3,2,4]`
-2. Insert `2` before `3` → `[1,2,3,4]`
-3. `4` already in place.
-
----
-
 # ⏱️ Insertion Sort — Analysis
 
 | Case | Comparisons | Time Complexity |
@@ -97,21 +83,6 @@ merge_sort(A):
     left = merge_sort(A[:mid])
     right = merge_sort(A[mid:])
     return merge(left, right)
-```
-
----
-
-# 🔗 Merge Step — Visualization
-
-```mermaid
-%%{init: {'theme': 'neutral'}}%%
-graph TD
-  A[8 3 5 2 9 1] -->|split| B1[8 3 5] & B2[2 9 1]
-  B1 -->|split| C1[8] & C2[3 5]
-  B2 -->|split| D1[2] & D2[9 1]
-  C2 -->|merge| E1[3 5]
-  D2 -->|merge| E2[1 9]
-  E1 & E2 -->|merge| F[1 2 3 5 8 9]
 ```
 
 ---
@@ -154,17 +125,6 @@ quick_sort(A, low, high):
 
 ---
 
-# 🔀 Partitioning — Visualization
-
-```mermaid
-%%{init: {'theme': 'neutral'}}%%
-graph LR
-  A1[5 2 9 1 5 6] -->|pivot=5| A2[2 1 | 5 | 9 5 6]
-  A2 -->|after partition| A3[2 1 5 5 6 9]
-```
-
----
-
 # ⏱️ QuickSort — Analysis
 
 | Case | Time Complexity | Notes |
@@ -188,18 +148,6 @@ graph LR
 
 ---
 
-# 💡 Visual Comparison
-
-```mermaid
-%%{init: {'theme': 'neutral'}}%%
-graph TD
-  I[Insertion Sort] -->|simple, small n| A
-  M[Merge Sort] -->|guaranteed n log n| A
-  Q[QuickSort] -->|fast on average| A
-  A[Sorted Output]
-```
-
----
 
 # 🧠 Key Takeaways
 
