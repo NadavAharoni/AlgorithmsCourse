@@ -52,7 +52,7 @@ $$
 a^n \cdot a^{-n} = a^{n + (-n)} = a^0
 $$
 
-We know$a^0 = 1$.  
+We know $a^0 = 1$.  
 Therefore:
 $$
 a^{-n} = \frac{1}{a^n}
