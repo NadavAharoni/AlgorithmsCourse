@@ -25,7 +25,7 @@ Before diving into algorithms, we need to recall some key **mathematical tools**
 
 ### Exponent Basics
 
-For any real numbers$a, b$:
+For any real numbers $a, b$:
 
 $$
 a^b = \underbrace{a \times a \times \dots \times a}_{b \text{ times}}
