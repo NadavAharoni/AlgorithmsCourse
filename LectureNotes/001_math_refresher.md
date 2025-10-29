@@ -43,17 +43,20 @@ Examples:
 We want exponent rules to stay **consistent** for all exponents, including negatives.
 
 Recall:
+
 $$
 a^m \cdot a^n = a^{m+n}
 $$
 
 Let’s set $m = n$ and $n = -n$:
+
 $$
 a^n \cdot a^{-n} = a^{n + (-n)} = a^0
 $$
 
 We know $a^0 = 1$.  
 Therefore:
+
 $$
 a^{-n} = \frac{1}{a^n}
 $$
