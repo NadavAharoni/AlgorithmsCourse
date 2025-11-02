@@ -1,12 +1,3 @@
-class Avot:
-    def __init__(self, name, sefer) -> None:
-        self.name = name
-        self.sefer = sefer
-
-    def __str__(self) -> str:
-        return F"name:{self.name}, sefer:{self.sefer}"
-
-
 def binary_search(arr, key):
     l = len(arr)
 
@@ -29,21 +20,6 @@ def binary_search(arr, key):
 
     return None
 
-avot_list = []
-avot_list.append( Avot("Avraham","Bereshit"))
-avot_list.append( Avot("Jacob","Bereshit"))
-avot_list.append( Avot("Moshe","Shmot"))
-avot_list.append( Avot("Aharon","Shmot"))
-
-for a in avot_list:
-    print(a)
-print("--------------")
-avot_sorted = sorted(avot_list, key = lambda a: a.name)
-
-for a in avot_sorted:
-    print(a)
-
-exit()
 
 a = [ ("Aharon","Shmot"), ("Avraham","Bereshit"), ("Jacob","Bereshit"), ("Moshe","Shmot") ]
 name = "Avraham"
