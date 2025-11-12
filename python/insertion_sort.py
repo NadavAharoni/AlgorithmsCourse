@@ -31,7 +31,7 @@ def insertion_sort(array):
         while i >= 0 and array[i] > item_to_insert:
             array[i+1] = array[i]
             i -= 1
-        # assign to array[i+1] because we must increment i
+        # assign to array[i+1] because we decrement i
         # inside the loop
         array[i+1] = item_to_insert
         next_item_index += 1
@@ -50,4 +50,5 @@ numbers = [999,300,200,500,800,400,900,100,700]
 # read_from_file(numbers)
 # insertion_sort(numbers)
 merge_sort(numbers)
+
 print(F"sorted:{numbers}")
