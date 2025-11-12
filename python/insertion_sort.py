@@ -41,7 +41,6 @@ def read_from_file(array):
     f = open("data.txt","r")
 
     for line in f:
-        # the following line assignes into a tuple
         num_str = line.strip()
         array.append(int(num_str))
 
@@ -52,3 +51,4 @@ numbers = [999,300,200,500,800,400,900,100,700]
 merge_sort(numbers)
 
 print(F"sorted:{numbers}")
+
