@@ -18,6 +18,27 @@ def merge_sort(array):
 
 def merge(array_a, array_b, array_dest):
     assert( len(array_dest) == len(array_a) + len(array_b) )
+    i = j = k = 0
+    while k < len(array_dest):
+        if i >= len(array_a):
+            array_dest[k] = array_b[j]
+            j += 1
+        elif j >= len(array_b):
+            array_dest[k] = array_a[i]
+            i += 1
+        else:
+            if array_a[i] <= array_b[j]:
+                array_dest[k] = array_a[i]
+                i += 1
+            else:
+                array_dest[k] = array_b[j]
+                j += 1
+        k += 1
+
+# previous version of merge using list.pop
+# which is less efficient
+def merge_pop(array_a, array_b, array_dest):
+    assert( len(array_dest) == len(array_a) + len(array_b) )
     # assume array_a and array_b
     for i in range(0,len(array_dest)):
         if len(array_b)==0:
