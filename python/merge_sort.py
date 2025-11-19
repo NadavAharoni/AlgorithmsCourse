@@ -13,17 +13,24 @@ def merge_sort(array):
 
     merge_sort(array_a)
     merge_sort(array_b)
-    # merge
-    for i in range(0,len(array)):
+
+    merge(array_a, array_b, array)
+
+def merge(array_a, array_b, array_dest):
+    assert( len(array_dest) == len(array_a) + len(array_b) )
+    # assume array_a and array_b
+    for i in range(0,len(array_dest)):
         if len(array_b)==0:
-            array[i] = array_a.pop(0)
+            array_dest[i] = array_a.pop(0)
         elif len(array_a)==0:
-            array[i] = array_b.pop(0)
+            array_dest[i] = array_b.pop(0)
         else: # both arrays must have a non-zero length
             if array_a[0] <= array_b[0]:
-                array[i] = array_a.pop(0)
+                array_dest[i] = array_a.pop(0)
             else:
-                array[i] = array_b.pop(0)
+                array_dest[i] = array_b.pop(0)
+
+
 
 
 # main
