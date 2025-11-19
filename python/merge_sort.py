@@ -3,8 +3,8 @@ def merge_sort(array):
         return
     mid = int(len(array)/2)
     # sort each half, then merge
-    array_a = array[:mid]
-    array_b = array[mid:]
+    array_a = array[:mid] # creates a copy
+    array_b = array[mid:] # creates a copy
 
     # print the sub arrays for learning purposes
     print(F"array_a={array_a}")
