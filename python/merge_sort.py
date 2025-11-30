@@ -1,3 +1,5 @@
+import random
+
 def merge_sort(array, depth=0):
     if len(array) <= 1:
         return
@@ -63,9 +65,9 @@ def merge_pop(array_a, array_b, array_dest):
 
 
 # main
-numbers = [999,300,200,500,800,400,900,100,700]
-# numbers = []
-# read_from_file(numbers)
-# insertion_sort(numbers)
+numbers = list(range(1,12))
+random.shuffle(numbers)
+print(F"numbers before sort:{numbers}")
+
 merge_sort(numbers)
 print(F"sorted:{numbers}")
