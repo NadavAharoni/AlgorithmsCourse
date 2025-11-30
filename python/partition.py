@@ -14,6 +14,7 @@ def partition_hoare(array: list, first: int, last: int) -> int:
             j -= 1
         if i >= j:
             return j
+        # swap a[i] <-> a[j]
         array[i], array[j] = array[j], array[i]
 
 
