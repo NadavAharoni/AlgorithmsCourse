@@ -1,18 +1,26 @@
-def merge_sort(array):
+def merge_sort(array, depth=0):
     if len(array) <= 1:
         return
+
     mid = int(len(array)/2)
     # sort each half, then merge
     array_a = array[:mid] # creates a copy
     array_b = array[mid:] # creates a copy
 
-    # print the sub arrays for learning purposes
-    print(F"array_a={array_a}")
-    print(F"array_b={array_b}")
-    print()
+    if depth == 0:
+        # print the sub arrays for learning purposes
+        print(F"array_a={array_a}")
+        print(F"array_b={array_b}")
+        print()
 
-    merge_sort(array_a)
-    merge_sort(array_b)
+    merge_sort(array_a, depth+1)
+    merge_sort(array_b, depth+1)
+
+    if depth == 0:
+        # print the sub arrays for learning purposes
+        print(F"array_a={array_a}")
+        print(F"array_b={array_b}")
+        print()
 
     merge(array_a, array_b, array)
 
