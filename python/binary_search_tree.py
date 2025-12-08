@@ -18,8 +18,10 @@ class Node:
             self.right.print()
 
     """
-    side: "left" if self is a left son, "right" if self is a right son
-    and "" (empty string) if self is root
+    The side argument equals to:
+    - "left" if self is a left son
+    - "right" if self is a right son
+    - "" (empty string) if self is root
     """
     def print_indented(self, indent="", side=""):
         if self.right:
@@ -71,8 +73,6 @@ class Node:
         else:
             if self.right:
                 print(indent[:-1]+"    ┗⦻")
-
-
 
     def depth(self) -> int:
         depth = 0
