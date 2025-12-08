@@ -24,7 +24,7 @@ def quickSort_lomuto(arr, low, high):
     quickSort_lomuto(arr, pi + 1, high)
 
 def main():
-    numbers = list(range(1, 11))
+    numbers = list(range(1, 12))
     random.shuffle(numbers)
     print(f"original shuffled numbers: {numbers}")
 
