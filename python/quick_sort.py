@@ -13,14 +13,15 @@ def quickSort_hoare(arr, low, high):
 
 
 def quickSort_lomuto(arr, low, high):
-    if low < high:
-        # pi is the partition return index (Lomuto partition)
-        # Lomuto places the pivot at its final sorted position
-        pi = partition_lomuto(arr, low, high)
+    if low >= high:
+        return
+    # pi is the partition return index (Lomuto partition)
+    # Lomuto places the pivot at its final sorted position
+    pi = partition_lomuto(arr, low, high)
 
-        # Recurse on [low..pi-1] and [pi+1..high]
-        quickSort_lomuto(arr, low, pi - 1)
-        quickSort_lomuto(arr, pi + 1, high)
+    # Recurse on [low..pi-1] and [pi+1..high]
+    quickSort_lomuto(arr, low, pi - 1)
+    quickSort_lomuto(arr, pi + 1, high)
 
 def main():
     numbers = list(range(1, 11))
