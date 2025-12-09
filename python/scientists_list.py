@@ -21,3 +21,18 @@ scientists = [
     ("Sagan", "Carl", 1975, "Cosmic Evolution"),
 ]
 
+# print( f"type(scientists)={type(scientists)}" )
+# print( f"type(scientists[0])={type(scientists[0])}" )
+
+# an example of a "key" function that can be 
+# passed to the function "sorted"
+def get_year(s):
+    return s[2]
+
+# test the "get_year" function:
+# s0 = scientists[0]
+# print( get_year(s0) )
+
+sorted_scientists = sorted(scientists, key=get_year)
+for s in sorted_scientists:
+    print(s)
