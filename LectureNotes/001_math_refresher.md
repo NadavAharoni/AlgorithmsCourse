@@ -248,7 +248,7 @@ Simplify using logarithm rules:
 
 ### 🔹 Exercise 3 — Change of Base Practice
 
-Compute each value using$\log_{10}$and the change of base formula:
+Compute each value using $\log_{10}$ and the change of base formula:
 
 1. $\log_2(32)$ 
 2. $\log_5(125)$
