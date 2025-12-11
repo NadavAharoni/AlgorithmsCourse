@@ -20,6 +20,60 @@ def is_max_heap(arr, i=0, key=lambda x: x):
             return False
     return True
 
+
+def max_heapify(arr, i, heap_size, key=lambda x: x):
+    """
+    Move element at index i down to maintain max heap property.
+    Assumes left and right subtrees are already max heaps.
+    """
+    largest = i
+    left_index = 2 * i + 1
+    right_index = 2 * i + 2
+    
+    # Find the largest among node, left child, and right child
+    if left_index < heap_size and key(arr[left_index]) > key(arr[largest]):
+        largest = left_index
+    
+    if right_index < heap_size and key(arr[right_index]) > key(arr[largest]):
+        largest = right_index
+    
+    # If largest is not the current node, swap and heapify down
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        max_heapify(arr, largest, heap_size, key)
+
+
+def max_heapify_iterative(arr, i, heap_size, key=lambda x: x):
+    """
+    Iterative version of max_heapify: restores max-heap property by
+    moving the element at index `i` down the heap using a loop.
+
+    Parameters:
+    - arr: list to operate on
+    - i: index of the node to heapify down
+    - heap_size: number of elements in the heap (elements at indices >= heap_size
+      are considered sorted / outside the heap)
+    - key: optional key function for comparison
+    """
+    current = i
+    while True:
+        largest = current
+        left_index = 2 * current + 1
+        right_index = 2 * current + 2
+
+        if left_index < heap_size and key(arr[left_index]) > key(arr[largest]):
+            largest = left_index
+
+        if right_index < heap_size and key(arr[right_index]) > key(arr[largest]):
+            largest = right_index
+
+        if largest == current:
+            break
+
+        arr[current], arr[largest] = arr[largest], arr[current]
+        current = largest
+
+
 if __name__ == "__main__":
     print("Testing index helpers (0-based):")
     for i in range(8):
