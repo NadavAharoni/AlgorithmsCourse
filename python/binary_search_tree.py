@@ -47,31 +47,6 @@ class Node:
             # print(F"{self.key}, indent={indent}")
             self.left.print_indented(next_indent,side="left")
 
-    # previous version
-    def print_indented1(self, indent=""):
-        if self.right:
-            if self.parent and self.parent.right and self.parent.right == self:
-                self.right.print_indented1(indent[:-1]+"   ┃")
-            else:
-                self.right.print_indented1(indent+"    ┃")
-        else:
-            if self.left:
-                print(indent[:-1]+"   ┏⦻")
-
-        side_symbol=""
-        if self.parent:
-            if self.parent.left == self:
-                side_symbol="┗"
-            else:
-                side_symbol = "┏"
-        print(F"{indent[:-1]}{side_symbol}{self.value}")
-
-        if self.left:
-            self.left.print_indented1(indent[:-1]+"   ┃")
-        else:
-            if self.right:
-                print(indent[:-1]+"    ┗⦻")
-
 
 
     def depth(self) -> int:
@@ -206,11 +181,6 @@ class Tree:
         if self.root:
             self.root.print_indented()
 
-    def print_indented1(self):
-        if self.root:
-            self.root.print_indented1()
-
-
     def depth(self):
         if self.root:
             return self.root.depth()
@@ -245,7 +215,6 @@ def main():
     tree.print()
     print("============\n\n")
     tree.print_indented()
-    tree.print_indented1()
 
     name = "aaron"
     node = tree.search_or_insert(name)
