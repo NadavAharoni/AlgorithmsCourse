@@ -1,8 +1,8 @@
 from typing import Optional 
 
 class Node:
-    def __init__(self, key: str):
-        self.key = key
+    def __init__(self, value: str):
+        self.value = value
         self.count : int = 0
         self.left : Optional[Node] = None
         self.right : Optional[Node] = None
@@ -12,7 +12,7 @@ class Node:
         if self.left:
             # print("left:", end="", sep="")
             self.left.print()
-        print(self.key, ", ", sep="", end="")
+        print(self.value, ", ", sep="", end="")
         if self.right:
             # print("right:", end="",sep="")
             self.right.print()
@@ -37,7 +37,7 @@ class Node:
             current_indent=indent[:-1]+"┏"
         else:
             current_indent=""
-        print(F"{current_indent}{self.key}:{self.count}")
+        print(F"{current_indent}{self.value}:{self.count}")
 
         if self.left:
             if side == "right" or side=="":
@@ -64,13 +64,15 @@ class Node:
                 side_symbol="┗"
             else:
                 side_symbol = "┏"
-        print(F"{indent[:-1]}{side_symbol}{self.key}:{self.count}")
+        print(F"{indent[:-1]}{side_symbol}{self.value}:{self.count}")
 
         if self.left:
             self.left.print_indented1(indent[:-1]+"   ┃")
         else:
             if self.right:
                 print(indent[:-1]+"    ┗⦻")
+
+
 
     def depth(self) -> int:
         depth = 0
@@ -142,49 +144,49 @@ class Tree:
     def __init__(self):
         self.root = None
 
-    def search_or_insert(self, key:str) -> Node:
+    def search_or_insert(self, value:str) -> Node:
         x = self.root
         y : Optional[Node] = None
         while x is not None:
             y = x
-            if key == x.key:
+            if value == x.value:
                 return x
-            if key > x.key:
+            if value > x.value:
                 x = x.right
             else:
                 x = x.left
-        new_node = Node(key)
+        new_node = Node(value)
         if y is None:
             # the tree was empty
             self.root = new_node
-        elif key > y.key:
+        elif value > y.value:
             y.right = new_node
         else:
             y.left = new_node
         new_node.parent = y
         return new_node
 
-    def insert(self, key:str):
+    def insert(self, value:str):
         x = self.root
         y : Optional[Node] = None
         while x is not None:
-            if key == x.key:
-                # if the key is already in the tree, ignore
+            if value == x.value:
+                # if the value is already in the tree, ignore
                 return
             y = x
-            if key > x.key:
+            if value > x.value:
                 x = x.right
             else:
                 x = x.left
         
-        new_node = Node(key)
+        new_node = Node(value)
         new_node.count = 1
         if y is None:
             # the tree was empty
             self.root = new_node
             return
-        assert(key != y.key)
-        if key > y.key:
+        assert(value != y.value)
+        if value > y.value:
             y.right = new_node
         else:
             y.left = new_node
@@ -217,7 +219,7 @@ class Tree:
 
     def min(self):
         if self.root:
-            return self.root.min().key
+            return self.root.min().value
         return None
     
     def min_node(self):
@@ -251,20 +253,20 @@ def main():
     node = tree.search_or_insert(name)
     node = node.successor()
     if node:
-        print(F"the succesor of {name} is {node.key}")
+        print(F"the succesor of {name} is {node.value}")
     else:
         print(F"{name} does not have a succesor")
 
     node = tree.search_or_insert(name)
     node = node.predecessor()
     if node:
-        print(F"the predecessor of {name} is {node.key}")
+        print(F"the predecessor of {name} is {node.value}")
     else:
         print(F"{name} does not have a predecessor")
 
     median_node = tree.median()
     if median_node:
-        print(F"median={median_node.key}")
+        print(F"median={median_node.value}")
     else:
         print(F"tree.median() returned None")
 
