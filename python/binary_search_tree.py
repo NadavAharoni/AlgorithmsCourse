@@ -3,7 +3,7 @@ from typing import Optional
 class Node:
     def __init__(self, value: str):
         self.value = value
-        self.count : int = 0
+        # count removed — not used anymore
         self.left : Optional[Node] = None
         self.right : Optional[Node] = None
         self.parent : Optional[Node] = None
@@ -37,7 +37,7 @@ class Node:
             current_indent=indent[:-1]+"┏"
         else:
             current_indent=""
-        print(F"{current_indent}{self.value}:{self.count}")
+        print(F"{current_indent}{self.value}")
 
         if self.left:
             if side == "right" or side=="":
@@ -64,7 +64,7 @@ class Node:
                 side_symbol="┗"
             else:
                 side_symbol = "┏"
-        print(F"{indent[:-1]}{side_symbol}{self.value}:{self.count}")
+        print(F"{indent[:-1]}{side_symbol}{self.value}")
 
         if self.left:
             self.left.print_indented1(indent[:-1]+"   ┃")
@@ -180,7 +180,6 @@ class Tree:
                 x = x.left
         
         new_node = Node(value)
-        new_node.count = 1
         if y is None:
             # the tree was empty
             self.root = new_node
@@ -241,8 +240,7 @@ def main():
     names = ["roy","shir","shani","shir","efraim","moshe","baruch","bracha","shai",
              "shir","vered","shani","roy","avi","aaron","reuven","pnina","efraim","roy"]
     for name in names:
-        node = tree.search_or_insert(name)
-        node.count += 1
+        tree.search_or_insert(name)
 
     tree.print()
     print("============\n\n")
