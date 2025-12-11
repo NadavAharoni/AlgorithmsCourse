@@ -1,7 +1,8 @@
+import random
 from typing import Optional 
 
 class Node:
-    def __init__(self, value: str):
+    def __init__(self, value):
         self.value = value
         # count removed — not used anymore
         self.left : Optional[Node] = None
@@ -10,11 +11,9 @@ class Node:
 
     def print(self):
         if self.left:
-            # print("left:", end="", sep="")
             self.left.print()
         print(self.value, ", ", sep="", end="")
         if self.right:
-            # print("right:", end="",sep="")
             self.right.print()
 
     """
@@ -118,8 +117,9 @@ class Node:
 class Tree:
     def __init__(self):
         self.root = None
+        self.key = key
 
-    def search_or_insert(self, value:str) -> Node:
+    def search_or_insert(self, value) -> Node:
         x = self.root
         y : Optional[Node] = None
         while x is not None:
@@ -141,7 +141,7 @@ class Tree:
         new_node.parent = y
         return new_node
 
-    def insert(self, value:str):
+    def insert(self, value):
         x = self.root
         y : Optional[Node] = None
         while x is not None:
@@ -237,6 +237,14 @@ def main():
     else:
         print(F"tree.median() returned None")
 
+    numbers = list(range(1,20,3))
+    random.shuffle(numbers)
+    print(f"shuffled: {numbers}")
+    tree2 = Tree()
+    for n in numbers:
+        tree2.insert(n)
+
+    tree2.print()
 
 if __name__=='__main__':
     main()
