@@ -115,9 +115,9 @@ class Node:
             return self.left.get_k_node(k)
 
 class Tree:
-    def __init__(self):
+    def __init__(self, key=lambda x: x):
         self.root = None
-        self.key = key
+        self.key = key # not used yet in the tree
 
     def search_or_insert(self, value) -> Node:
         x = self.root
