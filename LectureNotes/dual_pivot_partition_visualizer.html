@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dual-Pivot Partition Visualizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 20px;
+    }
+    #controls {
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 16px;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    #array-container {
+      display: flex;
+      align-items: flex-end;
+      height: 200px;
+      margin-top: 20px;
+      border: 1px solid #aaa;
+      padding: 10px;
+      background: white;
+    }
+    .bar {
+      width: 30px;
+      margin: 0 3px;
+      background: #888;
+      text-align: center;
+      color: white;
+      font-size: 14px;
+      border-radius: 4px 4px 0 0;
+    }
+    .pivot1 { background: #0074D9 !important; }
+    .pivot2 { background: #FF4136 !important; }
+    .lt { background: #2ECC40 !important; }
+    .gt { background: #FF851B !important; }
+    .i  { background: #B10DC9 !important; }
+  </style>
+</head>
+<body>
+  <h1>Dual-Pivot Partition Visualizer</h1>
+
+  <div id="controls">
+    <button onclick="generateRandom()">Generate Random Values</button>
+    <button onclick="step()">Step</button>
+    <button onclick="autoPlay()">Play</button>
+    <button onclick="pause()">Pause</button>
+  </div>
+
+  <div id="array-container"></div>
+
+  <script>
+    let arr = [];
+    let low = 0, high = 0;
+    let lt, gt, i;
+    let pivot1, pivot2;
+    let interval = null;
+    let finished = false;
+
+    function generateRandom() {
+      pause();
+      arr = Array.from({length: 10}, () => Math.floor(Math.random() * 90 + 10));
+      low = 0;
+      high = arr.length - 1;
+      if (arr[low] > arr[high]) [arr[low], arr[high]] = [arr[high], arr[low]];
+      pivot1 = arr[low];
+      pivot2 = arr[high];
+      lt = low + 1;
+      gt = high - 1;
+      i = lt;
+      finished = false;
+      render();
+    }
+
+    function render() {
+      const container = document.getElementById('array-container');
+      container.innerHTML = '';
+      arr.forEach((val, idx) => {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.height = val * 2 + 'px';
+        bar.textContent = val;
+
+        if (idx === low) bar.classList.add('pivot1');
+        if (idx === high) bar.classList.add('pivot2');
+        if (idx === lt) bar.classList.add('lt');
+        if (idx === gt) bar.classList.add('gt');
+        if (idx === i) bar.classList.add('i');
+
+        container.appendChild(bar);
+      });
+    }
+
+    function step() {
+      if (finished) return;
+
+      if (i > gt) {
+        [arr[low], arr[lt-1]] = [arr[lt-1], arr[low]];
+        [arr[high], arr[gt+1]] = [arr[gt+1], arr[high]];
+        finished = true;
+        render();
+        return;
+      }
+
+      if (arr[i] < pivot1) {
+        [arr[i], arr[lt]] = [arr[lt], arr[i]];
+        lt++;
+        i++;
+      } else if (arr[i] > pivot2) {
+        [arr[i], arr[gt]] = [arr[gt], arr[i]];
+        gt--;
+      } else {
+        i++;
+      }
+      render();
+    }
+
+    function autoPlay() {
+      if (interval) return;
+      interval = setInterval(() => {
+        step();
+        if (finished) pause();
+      }, 600);
+    }
+
+    function pause() {
+      if (interval) clearInterval(interval);
+      interval = null;
+    }
+
+    generateRandom();
+  </script>
+</body>
+</html>

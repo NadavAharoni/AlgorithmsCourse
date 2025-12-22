@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dual-Pivot Partition Visualizer</title>
+  <style>
+    :root{ --bg:#f0f0f0; --panel:#fff; --text:#222; }
+    body{ font-family: Arial, Helvetica, sans-serif; background:var(--bg); color:var(--text); margin:20px; }
+    #controls-row{ display:flex; align-items:center; gap:12px; }
+    #controls{ margin-bottom:10px; }
+    button{ padding:8px 12px; margin-right:8px; font-size:15px; cursor:pointer; }
+    #array-container{ display:flex; align-items:flex-end; height:260px; margin-top:10px; border:1px solid #ccc; padding:12px; background:var(--panel); border-radius:6px; }
+    .bar{ width:36px; margin:0 6px; background:#888; text-align:center; color:white; font-size:14px; border-radius:6px 6px 0 0; transition:height 300ms ease, transform 300ms ease, background-color 300ms ease; display:flex; align-items:flex-end; justify-content:center; padding-bottom:6px; }
+    .label{ height:28px; font-size:13px; margin-top:6px; transition:transform 300ms ease, color 300ms ease; min-width:60px; text-align:center; }
+    .pivot1{ background:#0074D9 !important; }
+    .pivot2{ background:#FF4136 !important; }
+    .lt{ box-shadow:0 0 0 3px rgba(46,125,50,0.08) inset; }
+    .gt{ box-shadow:0 0 0 3px rgba(255,133,27,0.08) inset; }
+    .i{ outline:2px dashed rgba(177,13,201,0.15); }
+    .arrow-up{ display:inline-block; transform-origin:center bottom; }
+    #legend{ margin-top:8px; font-size:15px; }
+    #legend span{ margin-right:12px; }
+    .swap-highlight{ animation:swapFlash 700ms ease; }
+    @keyframes swapFlash{ 0%{ transform:translateY(-6px);} 50%{ transform:translateY(-2px);} 100%{ transform:translateY(0);} }
+    #stepDesc{ margin-top:10px; font-weight:700; min-height:22px; }
+  </style>
+</head>
+<body>
+  <h2>Dual-Pivot Partition Visualizer</h2>
+  <div id="controls-row">
+    <div id="controls">
+      <button id="genBtn">Generate Random Values</button>
+      <button id="stepBtn">Step</button>
+      <button id="playBtn">Play</button>
+      <button id="pauseBtn">Pause</button>
+      <label style="margin-left:8px">Size:
+        <select id="sizeSelect">
+          <option value="8">8</option>
+          <option value="10" selected>10</option>
+          <option value="12">12</option>
+          <option value="15">15</option>
+        </select>
+      </label>
+    </div>
+    <div id="legend">
+      <strong>Legend:</strong>
+      <span style="color:#0074D9">■ pivot1</span>
+      <span style="color:#FF4136">■ pivot2</span>
+      <span style="color:#2ECC40">● lt</span>
+      <span style="color:#FF851B">● gt</span>
+      <span style="color:#B10DC9">● i</span>
+    </div>
+  </div>
+
+  <div id="stepDesc"></div>
+  <div id="array-container" aria-live="polite"></div>
+
+  <script>
+    // State
+    let arr = [];
+    let low = 0, high = 0;
+    let lt = 0, gt = 0, i = 0;
+    let pivot1, pivot2;
+    let interval = null;
+    let finished = false;
+    let lastSwap = null; // [a,b]
+
+    // Two-phase step state
+    let stepPhase = 'check'; // 'check' or 'swap'
+    let pending = null;
+
+    // DOM refs
+    const container = document.getElementById('array-container');
+    const stepDesc = document.getElementById('stepDesc');
+    const genBtn = document.getElementById('genBtn');
+    const stepBtn = document.getElementById('stepBtn');
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const sizeSelect = document.getElementById('sizeSelect');
+
+    // wire events
+    genBtn.addEventListener('click', generateRandom);
+    stepBtn.addEventListener('click', step);
+    playBtn.addEventListener('click', autoPlay);
+    pauseBtn.addEventListener('click', pause);
+
+    function generateRandom() {
+      pause();
+      const n = parseInt(sizeSelect.value, 10) || 10;
+      arr = Array.from({length: n}, () => Math.floor(Math.random() * 90 + 10));
+      low = 0; high = arr.length - 1;
+      if (arr[low] > arr[high]) [arr[low], arr[high]] = [arr[high], arr[low]];
+      pivot1 = arr[low]; pivot2 = arr[high];
+      lt = low + 1; gt = high - 1; i = lt;
+      finished = false; lastSwap = null; pending = null; stepPhase = 'check';
+      stepDesc.textContent = 'Initialized. Ready to step.';
+      render();
+    }
+
+    function createBar(val, idx) {
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex'; wrapper.style.flexDirection = 'column-reverse'; wrapper.style.alignItems = 'center'; wrapper.style.margin = '0 6px'; wrapper.style.minWidth = '60px';
+
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.height = Math.max(8, val) * 2 + 'px';
+      bar.textContent = val;
+
+      const label = document.createElement('div');
+      label.className = 'label';
+
+      if (idx === low) label.innerHTML = '<span class="arrow-up" style="color:#0074D9">▲ pivot1</span>';
+      else if (idx === high) label.innerHTML = '<span class="arrow-up" style="color:#FF4136">▲ pivot2</span>';
+      else {
+        const parts = [];
+        if (idx === lt) parts.push('<span class="arrow-up" style="color:#2ECC40">▲ lt</span>');
+        if (idx === gt) parts.push('<span class="arrow-up" style="color:#FF851B">▲ gt</span>');
+        if (idx === i)  parts.push('<span class="arrow-up" style="color:#B10DC9">▲ i</span>');
+        label.innerHTML = parts.join('<br>');
+      }
+
+      if (idx === low) bar.classList.add('pivot1');
+      if (idx === high) bar.classList.add('pivot2');
+      if (idx === lt) bar.classList.add('lt');
+      if (idx === gt) bar.classList.add('gt');
+      if (idx === i)  bar.classList.add('i');
+
+      if (lastSwap && (lastSwap[0] === idx || lastSwap[1] === idx)) {
+        bar.classList.add('swap-highlight');
+        setTimeout(() => bar.classList.remove('swap-highlight'), 700);
+      }
+
+      wrapper.appendChild(bar); wrapper.appendChild(label);
+      return wrapper;
+    }
+
+    function render() {
+      container.innerHTML = '';
+      arr.forEach((val, idx) => container.appendChild(createBar(val, idx)));
+    }
+
+    function step() {
+      if (!arr.length) { stepDesc.textContent = 'No array — click Generate Random Values.'; return; }
+      if (finished) { stepDesc.textContent = 'Partition finished. Generate new values or reset.'; return; }
+
+      // Phase 1: check and explain
+      if (stepPhase === 'check') {
+        if (i > gt) {
+          pending = { type: 'final-swaps' };
+          stepDesc.textContent = 'Final swaps needed: placing pivot1 and pivot2.';
+          stepPhase = 'swap';
+          render();
+          return;
+        }
+
+        if (arr[i] < pivot1) {
+          pending = { type: 'lt-swap', a: i, b: lt, value: arr[i] };
+          stepDesc.textContent = `arr[i] = ${arr[i]} < pivot1 (${pivot1}) → will swap with lt (next step)`;
+        } else if (arr[i] > pivot2) {
+          pending = { type: 'gt-swap', a: i, b: gt, value: arr[i] };
+          stepDesc.textContent = `arr[i] = ${arr[i]} > pivot2 (${pivot2}) → will swap with gt (next step)`;
+        } else {
+          pending = { type: 'move-i' };
+          stepDesc.textContent = `pivot1 ≤ arr[i] = ${arr[i]} ≤ pivot2 → will move i forward`;
+        }
+
+        stepPhase = 'swap';
+        render();
+        return;
+      }
+
+      // Phase 2: perform the pending action
+      if (stepPhase === 'swap') {
+        if (!pending) { stepPhase = 'check'; render(); return; }
+
+        if (pending.type === 'final-swaps') {
+          [arr[low], arr[lt-1]] = [arr[lt-1], arr[low]];
+          [arr[high], arr[gt+1]] = [arr[gt+1], arr[high]];
+          lastSwap = [low, lt-1]; render();
+          setTimeout(() => {
+            lastSwap = [high, gt+1]; render();
+            finished = true;
+            stepDesc.textContent = `Final swaps done — pivot1 @ ${lt-1}, pivot2 @ ${gt+1}`;
+          }, 300);
+          pending = null; stepPhase = 'check';
+          return;
+        }
+
+        if (pending.type === 'lt-swap') {
+          const {a, b, value} = pending;
+          stepDesc.textContent = `Performing: swap arr[i] = ${value} with arr[lt]`;
+          [arr[a], arr[b]] = [arr[b], arr[a]];
+          lastSwap = [a, b];
+          lt++; i++;
+          pending = null; stepPhase = 'check'; render();
+          return;
+        }
+
+        if (pending.type === 'gt-swap') {
+          const {a, b, value} = pending;
+          stepDesc.textContent = `Performing: swap arr[i] = ${value} with arr[gt]`;
+          [arr[a], arr[b]] = [arr[b], arr[a]];
+          lastSwap = [a, b];
+          gt--;
+          pending = null; stepPhase = 'check'; render();
+          return;
+        }
+
+        if (pending.type === 'move-i') {
+          stepDesc.textContent = 'Performing: move i forward';
+          i++; lastSwap = null; pending = null; stepPhase = 'check'; render();
+          return;
+        }
+      }
+    }
+
+    function autoPlay() {
+      if (interval) return;
+      interval = setInterval(() => { step(); if (finished) pause(); }, 550);
+    }
+
+    function pause() { if (interval) clearInterval(interval); interval = null; }
+
+    // initialize
+    generateRandom();
+  </script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320" style="font-family: Arial, Helvetica, sans-serif;">
+  <style>
+    .box { fill:#f3f4f6; stroke:#222; stroke-width:1; rx:6; ry:6; }
+    .idx { font-size:12px; fill:#333; }
+    .val { font-size:16px; font-weight:600; fill:#111; }
+    .pivot { font-size:12px; font-weight:700; }
+    .ptr-label { font-size:13px; font-weight:700; }
+    .ptr-line { stroke-width:3; stroke-linecap:round; }
+    .lt { stroke: #1e88e5; }    /* blue */
+    .i  { stroke: #2e7d32; }    /* green */
+    .gt { stroke: #c62828; }    /* red */
+  </style>
+
+  <!-- layout constants -->
+  <!-- first box x,y -->
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="18" y="28" font-size="18" font-weight="700">Dual-Pivot Partition — step-by-step</text>
+  <text x="18" y="48" font-size="12" fill="#444">Array: [5, 12, 3, 8, 7, 10, 2, 9, 6]   — pivots at ends (5 and 6)</text>
+
+  <!-- parameters -->
+  <!-- grid positions for 9 boxes -->
+  <!-- we will draw one frame group per step and animate opacity -->
+  
+  <!-- Frame groups -->
+  <!-- Each frame shows the full array with pointers placed according to that step -->
+  <!-- Frame duration -->
+  <!-- timings are cumulative: each frame shows for 1.2s -->
+  
+  <!-- Helper function (mental): x(index) = 20 + index*90 -->
+  
+  <!-- Frame 0: after choosing pivots (initial scanning start) -->
+  <g id="frame0" opacity="0">
+    <!-- animate visibility -->
+    <animate attributeName="opacity" begin="0s" dur="1.2s" to="1" fill="freeze" />
+    <animate attributeName="opacity" begin="1.2s" dur="0.01s" to="0" fill="freeze" />
+    
+    <!-- boxes -->
+    <g transform="translate(20,80)">
+      <!-- boxes and values -->
+      <g id="boxes0">
+        <!-- index 0..8 -->
+        <rect class="box" x="0" y="0" width="80" height="60"/>
+        <text class="idx" x="6" y="-6">idx 0</text>
+        <text class="val" x="36" y="38" text-anchor="middle">5</text>
+
+        <rect class="box" x="90" y="0" width="80" height="60"/>
+        <text class="idx" x="96" y="-6">idx 1</text>
+        <text class="val" x="130" y="38" text-anchor="middle">12</text>
+
+        <rect class="box" x="180" y="0" width="80" height="60"/>
+        <text class="idx" x="186" y="-6">idx 2</text>
+        <text class="val" x="220" y="38" text-anchor="middle">3</text>
+
+        <rect class="box" x="270" y="0" width="80" height="60"/>
+        <text class="idx" x="276" y="-6">idx 3</text>
+        <text class="val" x="310" y="38" text-anchor="middle">8</text>
+
+        <rect class="box" x="360" y="0" width="80" height="60"/>
+        <text class="idx" x="366" y="-6">idx 4</text>
+        <text class="val" x="400" y="38" text-anchor="middle">7</text>
+
+        <rect class="box" x="450" y="0" width="80" height="60"/>
+        <text class="idx" x="456" y="-6">idx 5</text>
+        <text class="val" x="490" y="38" text-anchor="middle">10</text>
+
+        <rect class="box" x="540" y="0" width="80" height="60"/>
+        <text class="idx" x="546" y="-6">idx 6</text>
+        <text class="val" x="580" y="38" text-anchor="middle">2</text>
+
+        <rect class="box" x="630" y="0" width="80" height="60"/>
+        <text class="idx" x="636" y="-6">idx 7</text>
+        <text class="val" x="670" y="38" text-anchor="middle">9</text>
+
+        <rect class="box" x="720" y="0" width="80" height="60"/>
+        <text class="idx" x="726" y="-6">idx 8</text>
+        <text class="val" x="760" y="38" text-anchor="middle">6</text>
+      </g>
+
+      <!-- pivot markers -->
+      <rect x="-4" y="66" width="88" height="18" rx="6" ry="6" fill="#fff" stroke="none"/>
+      <text class="pivot" x="36" y="80" text-anchor="middle" fill="#000">pivot1 = 5 (low)</text>
+      <rect x="716" y="66" width="88" height="18" rx="6" ry="6" fill="#fff" stroke="none"/>
+      <text class="pivot" x="760" y="80" text-anchor="middle" fill="#000">pivot2 = 6 (high)</text>
+
+      <!-- pointers: lt=1, i=1, gt=7 for this frame -->
+      <!-- lt -->
+      <line x1="130" y1="72" x2="130" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="120" y="126" fill="#1e88e5">lt = 1</text>
+      <!-- i -->
+      <line x1="130" y1="72" x2="130" y2="140" class="ptr-line i" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="120" y="156" fill="#2e7d32">i = 1</text>
+      <!-- gt -->
+      <line x1="670" y1="72" x2="670" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="658" y="126" fill="#c62828">gt = 7</text>
+    </g>
+  </g>
+
+  <!-- Frame 1: swap arr[1] with arr[7] (12 > pivot2) -->
+  <g id="frame1" opacity="0">
+    <animate attributeName="opacity" begin="1.2s" dur="1.2s" to="1" fill="freeze" />
+    <animate attributeName="opacity" begin="2.4s" dur="0.01s" to="0" fill="freeze" />
+
+    <g transform="translate(20,80)">
+      <!-- boxes with values after swap: arr[1] <-> arr[7] -->
+      <rect class="box" x="0" y="0" width="80" height="60"/><text class="val" x="36" y="38" text-anchor="middle">5</text>
+      <rect class="box" x="90" y="0" width="80" height="60"/><text class="val" x="130" y="38" text-anchor="middle">9</text>
+      <rect class="box" x="180" y="0" width="80" height="60"/><text class="val" x="220" y="38" text-anchor="middle">3</text>
+      <rect class="box" x="270" y="0" width="80" height="60"/><text class="val" x="310" y="38" text-anchor="middle">8</text>
+      <rect class="box" x="360" y="0" width="80" height="60"/><text class="val" x="400" y="38" text-anchor="middle">7</text>
+      <rect class="box" x="450" y="0" width="80" height="60"/><text class="val" x="490" y="38" text-anchor="middle">10</text>
+      <rect class="box" x="540" y="0" width="80" height="60"/><text class="val" x="580" y="38" text-anchor="middle">2</text>
+      <rect class="box" x="630" y="0" width="80" height="60"/><text class="val" x="670" y="38" text-anchor="middle">12</text>
+      <rect class="box" x="720" y="0" width="80" height="60"/><text class="val" x="760" y="38" text-anchor="middle">6</text>
+
+      <!-- pivot labels -->
+      <text class="pivot" x="36" y="80" text-anchor="middle">pivot1 = 5</text>
+      <text class="pivot" x="760" y="80" text-anchor="middle">pivot2 = 6</text>
+
+      <!-- pointers: lt=1, i=1, gt=7 -->
+      <line x1="130" y1="72" x2="130" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="120" y="126" fill="#1e88e5">lt = 1</text>
+
+      <line x1="130" y1="72" x2="130" y2="140" class="ptr-line i" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="120" y="156" fill="#2e7d32">i = 1</text>
+
+      <line x1="670" y1="72" x2="670" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="658" y="126" fill="#c62828">gt = 7</text>
+    </g>
+  </g>
+
+  <!-- Frame 2: swap arr[1] with arr[6] (9 > pivot2, swapped with arr[6]=2) -->
+  <g id="frame2" opacity="0">
+    <animate attributeName="opacity" begin="2.4s" dur="1.2s" to="1" fill="freeze" />
+    <animate attributeName="opacity" begin="3.6s" dur="0.01s" to="0" fill="freeze" />
+
+    <g transform="translate(20,80)">
+      <!-- values after swap: arr[1] <-> arr[6] -->
+      <rect class="box" x="0" y="0" width="80" height="60"/><text class="val" x="36" y="38" text-anchor="middle">5</text>
+      <rect class="box" x="90" y="0" width="80" height="60"/><text class="val" x="130" y="38" text-anchor="middle">2</text>
+      <rect class="box" x="180" y="0" width="80" height="60"/><text class="val" x="220" y="38" text-anchor="middle">3</text>
+      <rect class="box" x="270" y="0" width="80" height="60"/><text class="val" x="310" y="38" text-anchor="middle">8</text>
+      <rect class="box" x="360" y="0" width="80" height="60"/><text class="val" x="400" y="38" text-anchor="middle">7</text>
+      <rect class="box" x="450" y="0" width="80" height="60"/><text class="val" x="490" y="38" text-anchor="middle">10</text>
+      <rect class="box" x="540" y="0" width="80" height="60"/><text class="val" x="580" y="38" text-anchor="middle">9</text>
+      <rect class="box" x="630" y="0" width="80" height="60"/><text class="val" x="670" y="38" text-anchor="middle">12</text>
+      <rect class="box" x="720" y="0" width="80" height="60"/><text class="val" x="760" y="38" text-anchor="middle">6</text>
+
+      <!-- pointers: lt=1, i=1, gt=6 -->
+      <line x1="130" y1="72" x2="130" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="120" y="126" fill="#1e88e5">lt = 1</text>
+
+      <line x1="130" y1="72" x2="130" y2="140" class="ptr-line i" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="120" y="156" fill="#2e7d32">i = 1</text>
+
+      <line x1="580" y1="72" x2="580" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="568" y="126" fill="#c62828">gt = 6</text>
+    </g>
+  </g>
+
+  <!-- Frame 3: arr[1] (2) < pivot1 (5) -> swap arr[1] with arr[lt] (lt==1), move lt->2, i->2 -->
+  <g id="frame3" opacity="0">
+    <animate attributeName="opacity" begin="3.6s" dur="1.2s" to="1" fill="freeze" />
+    <animate attributeName="opacity" begin="4.8s" dur="0.01s" to="0" fill="freeze" />
+
+    <g transform="translate(20,80)">
+      <!-- values after swap (no visible change because lt==i==1) -->
+      <rect class="box" x="0" y="0" width="80" height="60"/><text class="val" x="36" y="38" text-anchor="middle">5</text>
+      <rect class="box" x="90" y="0" width="80" height="60"/><text class="val" x="130" y="38" text-anchor="middle">2</text>
+      <rect class="box" x="180" y="0" width="80" height="60"/><text class="val" x="220" y="38" text-anchor="middle">3</text>
+      <rect class="box" x="270" y="0" width="80" height="60"/><text class="val" x="310" y="38" text-anchor="middle">8</text>
+      <rect class="box" x="360" y="0" width="80" height="60"/><text class="val" x="400" y="38" text-anchor="middle">7</text>
+      <rect class="box" x="450" y="0" width="80" height="60"/><text class="val" x="490" y="38" text-anchor="middle">10</text>
+      <rect class="box" x="540" y="0" width="80" height="60"/><text class="val" x="580" y="38" text-anchor="middle">9</text>
+      <rect class="box" x="630" y="0" width="80" height="60"/><text class="val" x="670" y="38" text-anchor="middle">12</text>
+      <rect class="box" x="720" y="0" width="80" height="60"/><text class="val" x="760" y="38" text-anchor="middle">6</text>
+
+      <!-- pointers: lt=2, i=2, gt=6 -->
+      <line x1="220" y1="72" x2="220" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="208" y="126" fill="#1e88e5">lt = 2</text>
+
+      <line x1="220" y1="72" x2="220" y2="140" class="ptr-line i" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="208" y="156" fill="#2e7d32">i = 2</text>
+
+      <line x1="580" y1="72" x2="580" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="568" y="126" fill="#c62828">gt = 6</text>
+    </g>
+  </g>
+
+  <!-- Frame 4: i=2 (3) < pivot1 -> swap arr[2] with arr[lt] (lt==2), then lt->3, i->3 -->
+  <g id="frame4" opacity="0">
+    <animate attributeName="opacity" begin="4.8s" dur="1.2s" to="1" fill="freeze" />
+    <animate attributeName="opacity" begin="6.0s" dur="0.01s" to="0" fill="freeze" />
+
+    <g transform="translate(20,80)">
+      <!-- no visible change (swap with itself), values -->
+      <rect class="box" x="0" y="0" width="80" height="60"/><text class="val" x="36" y="38" text-anchor="middle">5</text>
+      <rect class="box" x="90" y="0" width="80" height="60"/><text class="val" x="130" y="38" text-anchor="middle">2</text>
+      <rect class="box" x="180" y="0" width="80" height="60"/><text class="val" x="220" y="38" text-anchor="middle">3</text>
+      <rect class="box" x="270" y="0" width="80" height="60"/><text class="val" x="310" y="38" text-anchor="middle">8</text>
+      <rect class="box" x="360" y="0" width="80" height="60"/><text class="val" x="400" y="38" text-anchor="middle">7</text>
+      <rect class="box" x="450" y="0" width="80" height="60"/><text class="val" x="490" y="38" text-anchor="middle">10</text>
+      <rect class="box" x="540" y="0" width="80" height="60"/><text class="val" x="580" y="38" text-anchor="middle">9</text>
+      <rect class="box" x="630" y="0" width="80" height="60"/><text class="val" x="670" y="38" text-anchor="middle">12</text>
+      <rect class="box" x="720" y="0" width="80" height="60"/><text class="val" x="760" y="38" text-anchor="middle">6</text>
+
+      <!-- pointers: lt=3, i=3, gt=6 -->
+      <line x1="310" y1="72" x2="310" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="126" fill="#1e88e5">lt = 3</text>
+
+      <line x1="310" y1="72" x2="310" y2="140" class="ptr-line i" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="156" fill="#2e7d32">i = 3</text>
+
+      <line x1="580" y1="72" x2="580" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="568" y="126" fill="#c62828">gt = 6</text>
+    </g>
+  </g>
+
+  <!-- Frame 5: i=3 (8) > pivot2 -> swap with arr[5] (gt=5 after two steps) -> multiple swaps shown -->
+  <g id="frame5" opacity="0">
+    <animate attributeName="opacity" begin="6.0s" dur="1.2s" to="1" fill="freeze" />
+    <animate attributeName="opacity" begin="7.2s" dur="0.01s" to="0" fill="freeze" />
+
+    <g transform="translate(20,80)">
+      <!-- after a series of >pivot2 swaps, we show the intermediate result:
+           values become: [5,2,3,10,7,8,9,12,6] (one swap of arr[3] with arr[5]) -->
+      <rect class="box" x="0" y="0" width="80" height="60"/><text class="val" x="36" y="38" text-anchor="middle">5</text>
+      <rect class="box" x="90" y="0" width="80" height="60"/><text class="val" x="130" y="38" text-anchor="middle">2</text>
+      <rect class="box" x="180" y="0" width="80" height="60"/><text class="val" x="220" y="38" text-anchor="middle">3</text>
+      <rect class="box" x="270" y="0" width="80" height="60"/><text class="val" x="310" y="38" text-anchor="middle">10</text>
+      <rect class="box" x="360" y="0" width="80" height="60"/><text class="val" x="400" y="38" text-anchor="middle">7</text>
+      <rect class="box" x="450" y="0" width="80" height="60"/><text class="val" x="490" y="38" text-anchor="middle">8</text>
+      <rect class="box" x="540" y="0" width="80" height="60"/><text class="val" x="580" y="38" text-anchor="middle">9</text>
+      <rect class="box" x="630" y="0" width="80" height="60"/><text class="val" x="670" y="38" text-anchor="middle">12</text>
+      <rect class="box" x="720" y="0" width="80" height="60"/><text class="val" x="760" y="38" text-anchor="middle">6</text>
+
+      <!-- pointers: lt=3, i=3, gt=5 -->
+      <line x1="310" y1="72" x2="310" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="126" fill="#1e88e5">lt = 3</text>
+
+      <line x1="310" y1="72" x2="310" y2="140" class="ptr-line i" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="156" fill="#2e7d32">i = 3</text>
+
+      <line x1="490" y1="72" x2="490" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="478" y="126" fill="#c62828">gt = 5</text>
+    </g>
+  </g>
+
+  <!-- Frame 6: next swap of >pivot2 - arr[3]=10 swapped with arr[4]=7 -->
+  <g id="frame6" opacity="0">
+    <animate attributeName="opacity" begin="7.2s" dur="1.2s" to="1" fill="freeze" />
+    <animate attributeName="opacity" begin="8.4s" dur="0.01s" to="0" fill="freeze" />
+
+    <g transform="translate(20,80)">
+      <!-- values after next swap: [5,2,3,7,10,8,9,12,6], gt=4 -->
+      <rect class="box" x="0" y="0" width="80" height="60"/><text class="val" x="36" y="38" text-anchor="middle">5</text>
+      <rect class="box" x="90" y="0" width="80" height="60"/><text class="val" x="130" y="38" text-anchor="middle">2</text>
+      <rect class="box" x="180" y="0" width="80" height="60"/><text class="val" x="220" y="38" text-anchor="middle">3</text>
+      <rect class="box" x="270" y="0" width="80" height="60"/><text class="val" x="310" y="38" text-anchor="middle">7</text>
+      <rect class="box" x="360" y="0" width="80" height="60"/><text class="val" x="400" y="38" text-anchor="middle">10</text>
+      <rect class="box" x="450" y="0" width="80" height="60"/><text class="val" x="490" y="38" text-anchor="middle">8</text>
+      <rect class="box" x="540" y="0" width="80" height="60"/><text class="val" x="580" y="38" text-anchor="middle">9</text>
+      <rect class="box" x="630" y="0" width="80" height="60"/><text class="val" x="670" y="38" text-anchor="middle">12</text>
+      <rect class="box" x="720" y="0" width="80" height="60"/><text class="val" x="760" y="38" text-anchor="middle">6</text>
+
+      <!-- pointers: lt=3, i=3, gt=4 -->
+      <line x1="310" y1="72" x2="310" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="126" fill="#1e88e5">lt = 3</text>
+
+      <line x1="310" y1="72" x2="310" y2="140" class="ptr-line i" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="156" fill="#2e7d32">i = 3</text>
+
+      <line x1="400" y1="72" x2="400" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="388" y="126" fill="#c62828">gt = 4</text>
+    </g>
+  </g>
+
+  <!-- Frame 7: after last gt swap when gt reduces to 3 and loop ends -->
+  <g id="frame7" opacity="0">
+    <animate attributeName="opacity" begin="8.4s" dur="1.2s" to="1" fill="freeze" />
+    <animate attributeName="opacity" begin="9.6s" dur="0.01s" to="0" fill="freeze" />
+
+    <g transform="translate(20,80)">
+      <!-- we show the state where gt==3 and i==3 (loop about to finish) -->
+      <rect class="box" x="0" y="0" width="80" height="60"/><text class="val" x="36" y="38" text-anchor="middle">5</text>
+      <rect class="box" x="90" y="0" width="80" height="60"/><text class="val" x="130" y="38" text-anchor="middle">2</text>
+      <rect class="box" x="180" y="0" width="80" height="60"/><text class="val" x="220" y="38" text-anchor="middle">3</text>
+      <rect class="box" x="270" y="0" width="80" height="60"/><text class="val" x="310" y="38" text-anchor="middle">7</text>
+      <rect class="box" x="360" y="0" width="80" height="60"/><text class="val" x="400" y="38" text-anchor="middle">10</text>
+      <rect class="box" x="450" y="0" width="80" height="60"/><text class="val" x="490" y="38" text-anchor="middle">8</text>
+      <rect class="box" x="540" y="0" width="80" height="60"/><text class="val" x="580" y="38" text-anchor="middle">9</text>
+      <rect class="box" x="630" y="0" width="80" height="60"/><text class="val" x="670" y="38" text-anchor="middle">12</text>
+      <rect class="box" x="720" y="0" width="80" height="60"/><text class="val" x="760" y="38" text-anchor="middle">6</text>
+
+      <!-- pointers: lt=3, i=3, gt=3 -->
+      <line x1="310" y1="72" x2="310" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="126" fill="#1e88e5">lt = 3</text>
+
+      <line x1="310" y1="72" x2="310" y2="140" class="ptr-line i" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="156" fill="#2e7d32">i = 3</text>
+
+      <line x1="310" y1="72" x2="310" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="140" fill="#c62828">gt = 3</text>
+    </g>
+  </g>
+
+  <!-- Frame 8: final — place pivots into final spots (swap low with lt-1 and high with gt+1) -->
+  <g id="frame8" opacity="0">
+    <animate attributeName="opacity" begin="9.6s" dur="1.2s" to="1" fill="freeze" />
+    <!-- last frame stays visible (no hide animation) -->
+
+    <g transform="translate(20,80)">
+      <!-- final array after swapping pivots:
+           final array = [3,2,5,6,10,8,9,12,7] according to our partition run -->
+      <rect class="box" x="0" y="0" width="80" height="60"/><text class="val" x="36" y="38" text-anchor="middle">3</text>
+      <rect class="box" x="90" y="0" width="80" height="60"/><text class="val" x="130" y="38" text-anchor="middle">2</text>
+      <rect class="box" x="180" y="0" width="80" height="60"/><text class="val" x="220" y="38" text-anchor="middle">5</text>
+      <rect class="box" x="270" y="0" width="80" height="60"/><text class="val" x="310" y="38" text-anchor="middle">6</text>
+      <rect class="box" x="360" y="0" width="80" height="60"/><text class="val" x="400" y="38" text-anchor="middle">10</text>
+      <rect class="box" x="450" y="0" width="80" height="60"/><text class="val" x="490" y="38" text-anchor="middle">8</text>
+      <rect class="box" x="540" y="0" width="80" height="60"/><text class="val" x="580" y="38" text-anchor="middle">9</text>
+      <rect class="box" x="630" y="0" width="80" height="60"/><text class="val" x="670" y="38" text-anchor="middle">12</text>
+      <rect class="box" x="720" y="0" width="80" height="60"/><text class="val" x="760" y="38" text-anchor="middle">7</text>
+
+      <!-- final pivot positions: lt-1 = 2, gt+1 = 3 -->
+      <rect x="172" y="66" width="96" height="18" rx="6" ry="6" fill="#fff" stroke="none"/>
+      <text class="pivot" x="220" y="80" text-anchor="middle">pivot1 final at idx 2</text>
+
+      <rect x="262" y="66" width="96" height="18" rx="6" ry="6" fill="#fff" stroke="none"/>
+      <text class="pivot" x="310" y="80" text-anchor="middle">pivot2 final at idx 3</text>
+
+      <!-- final pointers (positions of pivots) -->
+      <line x1="220" y1="72" x2="220" y2="110" class="ptr-line lt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="208" y="126" fill="#1e88e5">pivot1 @ 2</text>
+
+      <line x1="310" y1="72" x2="310" y2="110" class="ptr-line gt" marker-end="url(#arrow)"/>
+      <text class="ptr-label" x="298" y="126" fill="#c62828">pivot2 @ 3</text>
+    </g>
+  </g>
+
+  <!-- Footer: controls / note -->
+  <text x="18" y="310" font-size="12" fill="#555">Animation shows the main partition loop steps (swaps and pointer moves). Each frame lasts ~1.2s.</text>
+</svg>
