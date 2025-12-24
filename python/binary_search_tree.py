@@ -16,6 +16,31 @@ class Node:
         if self.right:
             self.right.print()
 
+    def print_mermaid(self, id:str):
+        if self.parent is None:
+            # self is the root
+            id = "t"
+            print(f"\t{id}(({self.value}))")
+        
+        # if no children - return
+        if self.right is None and self.left is None:
+            return
+        
+        if self.left:
+            print(f"\t{id} --> {id+"l"}(({self.left.value}))")
+            self.left.print_mermaid(id+"l")
+        else:
+            print(f"\t{id} ~~~ {id+"l"}(( ))")
+            print(f"\tstyle {id+"l"} fill:#fff,stroke-width:0px")
+
+        if self.right:
+            print(f"\t{id} --> {id+"r"}(({self.right.value}))")
+            self.right.print_mermaid(id+"r")
+        else:
+            print(f"\t{id} ~~~ {id+"r"}(( ))")
+            print(f"\tstyle {id+"r"} fill:#fff,stroke-width:0px")
+
+
     """
     side: "left" if self is a left son, "right" if self is a right son
     and "" (empty string) if self is root
@@ -177,6 +202,12 @@ class Tree:
             self.root.print()
         print() # print an empty line
 
+    def print_mermaid(self):
+        if not self.root:
+            return
+        print("flowchart TD")
+        self.root.print_mermaid("")
+
     def print_indented(self):
         if self.root:
             self.root.print_indented()
@@ -245,6 +276,8 @@ def main():
         tree2.insert(n)
 
     tree2.print()
+    tree2.print_mermaid()
+
 
 if __name__=='__main__':
     main()
