@@ -4,7 +4,6 @@ from typing import Optional
 class Node:
     def __init__(self, value):
         self.value = value
-        # count removed — not used anymore
         self.left : Optional[Node] = None
         self.right : Optional[Node] = None
         self.parent : Optional[Node] = None
