@@ -9,5 +9,9 @@ class AVLNode:
         self.balance_factor = 0
         
 
+class AVLTree:
+    def __init__(self, key= lambda x: x):
+        self.key = key
+        self.root : Optional[AVLNode] = None
 
 
