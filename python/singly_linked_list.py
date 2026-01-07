@@ -12,13 +12,11 @@ class SinglyLinkedList:
     # ---------- Stack operations ----------
 
     def push(self, value):
-        """Push value onto the stack (insert at head)."""
         new_link = Link(value, self.head)
         self.head = new_link
         self._size += 1
 
     def pop(self):
-        """Pop and return the top value from the stack."""
         if self.is_empty():
             raise IndexError("pop from empty stack")
 
@@ -28,14 +26,11 @@ class SinglyLinkedList:
         return value
 
     def peek(self):
-        """Return the top value without removing it."""
         if self.is_empty():
             raise IndexError("peek from empty stack")
-
         return self.head.value
 
     def is_empty(self):
-        """Return True if the stack is empty."""
         return self.head is None
 
     # ---------- Utility methods ----------
@@ -53,3 +48,46 @@ class SinglyLinkedList:
         values = " -> ".join(str(v) for v in self)
         return f"SinglyLinkedList({values})"
 
+
+# ---------- Tests / main ----------
+
+def main():
+    print("Creating empty stack...")
+    stack = SinglyLinkedList()
+
+    print("Is empty?", stack.is_empty())
+    print("Size:", stack.size())
+    print()
+
+    print("Pushing values: 10, 20, 30")
+    stack.push(10)
+    stack.push(20)
+    stack.push(30)
+
+    print("Stack:", stack)
+    print("Top element (peek):", stack.peek())
+    print("Size:", stack.size())
+    print()
+
+    print("Popping elements:")
+    print("Popped:", stack.pop())
+    print("Stack:", stack)
+
+    print("Popped:", stack.pop())
+    print("Stack:", stack)
+
+    print("Popped:", stack.pop())
+    print("Stack:", stack)
+
+    print("Is empty?", stack.is_empty())
+    print()
+
+    print("Attempting to pop from empty stack:")
+    try:
+        stack.pop()
+    except IndexError as e:
+        print("Caught exception:", e)
+
+
+if __name__ == "__main__":
+    main()
