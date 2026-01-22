@@ -110,7 +110,7 @@ def main():
     
     hash_table = HashTable()
 
-    for scientist in scientists_list.scientists[0:7]:
+    for scientist in scientists_list.scientists:
         print(f"==============")
         hash_table.insert(scientist[0], scientist)
 
