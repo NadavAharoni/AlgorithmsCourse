@@ -33,6 +33,10 @@ def get_year(s):
 # s0 = scientists[0]
 # print( get_year(s0) )
 
-sorted_scientists = sorted(scientists, key=get_year)
-for s in sorted_scientists:
-    print(s)
+def main():
+    sorted_scientists = sorted(scientists, key=get_year)
+    for s in sorted_scientists:
+        print(s)
+
+if __name__ == "__main__":
+    main()
