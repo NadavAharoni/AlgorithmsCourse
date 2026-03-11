@@ -139,66 +139,76 @@ def recursive_lcs_memo_2(x : list, y: list, m : Table2D):
 
 
 def main():
-    X=['A', 'B', 'C', 'B', 'D', 'A', 'B']
-    Y=['B', 'D', 'C', 'A', 'B', 'A']
+    X = "ABCBDAB"
+    Y = "BDCABA"
     print(X)
     print(Y)
 
-    global recursive_lcs_counter
-    recursive_lcs_counter = 0
-    lcs = recursive_lcs_list(X, Y)
-    print(F"result={lcs}")
-    print(F"recursive_lcs_counter={recursive_lcs_counter}")
+    g = CallGraph()
+    recursive_lcs_str(X, Y, g)
+    g.write_dot()
 
-    global recursive_lcs_memo_counter
-    recursive_lcs_memo_counter=0
-    memo = Table2D()
-    lcs = recursive_lcs_memo(X, Y, memo)
-    print(F"result={lcs}")
-    print(F"recursive_lcs_memo_counter={recursive_lcs_memo_counter}")
+    if False:
+        X=['A', 'B', 'C', 'B', 'D', 'A', 'B']
+        Y=['B', 'D', 'C', 'A', 'B', 'A']
+        print(X)
+        print(Y)
+
+        global recursive_lcs_counter
+        recursive_lcs_counter = 0
+        lcs = recursive_lcs_list(X, Y)
+        print(F"result={lcs}")
+        print(F"recursive_lcs_counter={recursive_lcs_counter}")
+
+        global recursive_lcs_memo_counter
+        recursive_lcs_memo_counter=0
+        memo = Table2D()
+        lcs = recursive_lcs_memo(X, Y, memo)
+        print(F"result={lcs}")
+        print(F"recursive_lcs_memo_counter={recursive_lcs_memo_counter}")
 
 
-    # X = ['A', 'B', 'C']
-    # Y = ['B', 'D', 'C']
-    global recursive_lcs_memo_counter_2
-    recursive_lcs_memo_counter_2=0
-    memo_2 = Table2D(len(Y)+1, len(X)+1)
-    lcs = recursive_lcs_memo_2(X, Y, memo_2)
-    print(F"result={lcs}")
-    print(F"recursive_lcs_memo_counter={recursive_lcs_memo_counter_2}")
+        # X = ['A', 'B', 'C']
+        # Y = ['B', 'D', 'C']
+        global recursive_lcs_memo_counter_2
+        recursive_lcs_memo_counter_2=0
+        memo_2 = Table2D(len(Y)+1, len(X)+1)
+        lcs = recursive_lcs_memo_2(X, Y, memo_2)
+        print(F"result={lcs}")
+        print(F"recursive_lcs_memo_counter={recursive_lcs_memo_counter_2}")
 
-    # ======== print results ========
-    Y = [' '] + Y
-    X = [' '] + X
-    # fill the table with zeros
-    for row_idx in range(len(Y)):
+        # ======== print results ========
+        Y = [' '] + Y
+        X = [' '] + X
+        # fill the table with zeros
+        for row_idx in range(len(Y)):
+            for column_idx in range(len(X)):
+                if not memo_2[row_idx, column_idx]:
+                    memo_2[row_idx, column_idx] = MemoCell(0, ' ')
+
+        # print the sequence X as column headers
+        print("   ", end='')
         for column_idx in range(len(X)):
-            if not memo_2[row_idx, column_idx]:
-                memo_2[row_idx, column_idx] = MemoCell(0, ' ')
-
-    # print the sequence X as column headers
-    print("   ", end='')
-    for column_idx in range(len(X)):
-        print(F"{X[column_idx]}   |", end='')
-    print()
-
-    # print the rows of the table
-    for row_idx in range(len(Y)):
-        print(F"   ", end='')
-        for column_idx in range(len(X)):
-            print(F"----|", end='')
-        print()        
-        print(F"{Y[row_idx]}: ", end='')
-        for column_idx in range(len(X)):
-            print(F"{memo_2[row_idx, column_idx].length}   |", end='')
+            print(F"{X[column_idx]}   |", end='')
         print()
-        print(F"   ", end='')
-        for column_idx in range(len(X)):
-            print(F"   {memo_2[row_idx, column_idx].arrow}|", end='')
-        print()        
 
-    # print("===============")
-    # print(memo_2)
+        # print the rows of the table
+        for row_idx in range(len(Y)):
+            print(F"   ", end='')
+            for column_idx in range(len(X)):
+                print(F"----|", end='')
+            print()        
+            print(F"{Y[row_idx]}: ", end='')
+            for column_idx in range(len(X)):
+                print(F"{memo_2[row_idx, column_idx].length}   |", end='')
+            print()
+            print(F"   ", end='')
+            for column_idx in range(len(X)):
+                print(F"   {memo_2[row_idx, column_idx].arrow}|", end='')
+            print()        
+
+        # print("===============")
+        # print(memo_2)
 
     
 
