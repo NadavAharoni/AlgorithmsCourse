@@ -34,9 +34,17 @@ def get_year(s):
 # print( get_year(s0) )
 
 def main():
-    sorted_scientists = sorted(scientists, key=get_year)
-    for s in sorted_scientists:
+    s3 = scientists[:3]
+    for s in s3:
         print(s)
+    s3_sorted = sorted(s3, key= lambda x: x[2])
+    print("=== sorted ===")
+    for s in s3_sorted:
+        print(s)
+
+    # sorted_scientists = sorted(scientists, key=get_year)
+    # for s in sorted_scientists:
+    #     print(s)
 
 if __name__ == "__main__":
     main()
