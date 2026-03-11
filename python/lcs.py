@@ -23,6 +23,15 @@ def recursive_lcs_list(x : list, y: list):
             lcs = lcs2
     return lcs
 
+def recursive_lcs_str(x: str, y: str) -> str:
+    if len(x) == 0 or len(y) == 0:
+        return ""
+    if x[-1] == y[-1]:
+        return recursive_lcs_str(x[:-1], y[:-1]) + x[-1]
+    lcs1 = recursive_lcs_str(x[:-1], y)
+    lcs2 = recursive_lcs_str(x, y[:-1])
+    return lcs1 if len(lcs1) >= len(lcs2) else lcs2
+
 def recursive_lcs_memo(x : list, y: list, m : Table2D):
     global recursive_lcs_memo_counter
     recursive_lcs_memo_counter += 1
