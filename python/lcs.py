@@ -26,14 +26,20 @@ def recursive_lcs_list(x : list, y: list):
 class CallGraph:
     def __init__(self):
         self._call_id = 0
+        self._stack = []  # stack of ancestor node IDs
         self.edges = []   # (parent_id, child_id, color)
         self.labels = []  # (node_id, label_str)
 
-    def _new_node(self, x: str, y: str) -> int:
+    def _push(self, x: str, y: str, edge_color: str):
         my_id = self._call_id
         self._call_id += 1
         self.labels.append((my_id, f"#{my_id}\\nx='{x}'\\ny='{y}'"))
-        return my_id
+        if self._stack:
+            self.edges.append((self._stack[-1], my_id, edge_color))
+        self._stack.append(my_id)
+
+    def _pop(self):
+        self._stack.pop()
 
     def write_dot(self, filename="lcs_calls.dot"):
         with open(filename, "w") as f:
@@ -46,21 +52,26 @@ class CallGraph:
             f.write("}\n")
 
 
-def recursive_lcs_str(x: str, y: str, graph: CallGraph = None, _parent=None, _edge_color="black") -> str:
-    my_id = None
+def recursive_lcs_str(x: str, y: str, graph: CallGraph = None, _edge_color="black") -> str:
     if graph is not None:
-        my_id = graph._new_node(x, y)
-        if _parent is not None:
-            graph.edges.append((_parent, my_id, _edge_color))
-    
+        graph._push(x, y, _edge_color)
+
     if len(x) == 0 or len(y) == 0:
+        if graph is not None:
+            graph._pop()
         return ""
     
     if x[-1] == y[-1]:
-        return recursive_lcs_str(x[:-1], y[:-1], graph, my_id, "green") + x[-1]
+        result = recursive_lcs_str(x[:-1], y[:-1], graph, "green") + x[-1]
+        if graph is not None:
+            graph._pop()
+        return result
     
-    lcs1 = recursive_lcs_str(x[:-1], y, graph, my_id, "blue")
-    lcs2 = recursive_lcs_str(x, y[:-1], graph, my_id, "red")
+    lcs1 = recursive_lcs_str(x[:-1], y, graph, "blue")
+    lcs2 = recursive_lcs_str(x, y[:-1], graph, "red")
+    if graph is not None:
+        graph._pop()
+        
     return lcs1 if len(lcs1) >= len(lcs2) else lcs2
 
 def recursive_lcs_memo(x : list, y: list, m : Table2D):
