@@ -52,10 +52,13 @@ def recursive_lcs_str(x: str, y: str, graph: CallGraph = None, _parent=None, _ed
         my_id = graph._new_node(x, y)
         if _parent is not None:
             graph.edges.append((_parent, my_id, _edge_color))
+    
     if len(x) == 0 or len(y) == 0:
         return ""
+    
     if x[-1] == y[-1]:
         return recursive_lcs_str(x[:-1], y[:-1], graph, my_id, "green") + x[-1]
+    
     lcs1 = recursive_lcs_str(x[:-1], y, graph, my_id, "blue")
     lcs2 = recursive_lcs_str(x, y[:-1], graph, my_id, "red")
     return lcs1 if len(lcs1) >= len(lcs2) else lcs2
