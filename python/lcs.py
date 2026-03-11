@@ -3,7 +3,7 @@ from table2d import Table2D
 recursive_lcs_counter=0
 recursive_lcs_memo_counter = 0
 
-def recursive_lcs(x : list, y: list):
+def recursive_lcs_list(x : list, y: list):
     lcs = []
     global recursive_lcs_counter
     recursive_lcs_counter += 1
@@ -12,11 +12,11 @@ def recursive_lcs(x : list, y: list):
     last_x = x[-1]
     last_y = y[-1]
     if last_x == last_y:
-        lcs = recursive_lcs(x[0:-1], y[0:-1])
+        lcs = recursive_lcs_list(x[0:-1], y[0:-1])
         lcs += [ last_x ] 
     else:
-        lcs1 = recursive_lcs(x[0:-1],y)
-        lcs2 = recursive_lcs(x,y[0:-1])
+        lcs1 = recursive_lcs_list(x[0:-1],y)
+        lcs2 = recursive_lcs_list(x,y[0:-1])
         if len(lcs1) >= len(lcs2):
             lcs = lcs1
         else:
@@ -109,7 +109,7 @@ def main():
 
     global recursive_lcs_counter
     recursive_lcs_counter = 0
-    lcs = recursive_lcs(X, Y)
+    lcs = recursive_lcs_list(X, Y)
     print(F"result={lcs}")
     print(F"recursive_lcs_counter={recursive_lcs_counter}")
 
