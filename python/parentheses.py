@@ -69,18 +69,22 @@ def main():
     table = matrix_chain_order(matrix_dimentions)
     print(table)
 
-    matrices = [ F"A{i}" for i in range(1,6) ]
-    print(F"matrices={matrices}")
-
-    p = enumerate_parentheses(matrices)
-    print("-----------------")
-    # print(p)
-    i = 0
-    for p1 in p:
-        # print(F"p1={p1}")
-        i += 1
-        str = paren_str(p1)
-        print(F"{i:2}: str= {str[1:-1]}  -  {p1}")
+    print_enumerate_parentheses = False
+    if print_enumerate_parentheses:
+        matrices = [ F"A{i}" for i in range(1,5) ]
+        print(F"matrices={matrices}")
+        p = enumerate_parentheses(matrices)
+        print("-----------------")
+        # print(p)
+        i = 0
+        for p1 in p:
+            # print(F"p1={p1}")
+            i += 1
+            str = paren_str(p1)
+            # remove outer parenthesis
+            str = str[1:-1]
+            print(F"{str}")
+            # print(F"{i:2}: str= {str[1:-1]}  -  {p1}")
 
 if __name__=='__main__':
     main()
