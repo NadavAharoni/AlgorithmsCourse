@@ -153,8 +153,10 @@ def recursive_lcs_memo_2(x : list, y: list, m : Table2D):
 
 
 def main():
-    X = "ABCBDAB"
-    Y = "BDCABA"
+    X = "ABC"
+    Y = "DEF"
+    # X = "ABCBDAB"
+    # Y = "BDCABA"
     print(X)
     print(Y)
 
