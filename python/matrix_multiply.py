@@ -13,7 +13,7 @@ def matrix_multiply_naive(A, B):
 
     number_of_multiplications = 0
     # write here python loops that calculate
-    # each entry i,j in result
+    # each entry i,j in result,
     # and also updates number_of_multiplications
                 
     return result, number_of_multiplications
