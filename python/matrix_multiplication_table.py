@@ -11,8 +11,27 @@ class matrix_multiplication_table:
             for j in range(1, len(dimensions)):
                 self.table[i][j] = None
 
+    def cell_to_html(self, cell):
+        if cell is None:
+            return ""
+        if type(cell) is not dict:
+            return ""
+        # else, cell is a dict
+        ret = ""
+        i,j = cell["range"]
+        if j == i+1:
+            ret += F"ops: A{i} x A{j}"
+        else:
+            ret += F"ops: A{i} .. A{j}"
+
+        if "cost" in cell:
+            ret += F"<br>cost: {cell['cost']}"
+        if "optimized_parenthesization" in cell:
+            ret += F"<br>optimized: {cell['optimized_parenthesization']}"
+        return ret
+
     def print_to_html(self):
-        html = "<table border='1'>\n"
+        html = "<table border='1' style='border-collapse: collapse'>\n"
         html += "<tr><th></th>"
         for j in range(1, len(self.dimensions)):
             html += F"<th>{self.titles[j]}</th>"
@@ -21,11 +40,7 @@ class matrix_multiplication_table:
             html += F"<tr><th>{self.titles[i]}</th>"
             for j in range(1, len(self.dimensions)):
                 cell = self.table[i][j]
-                if cell is None:
-                    cell_str = ""
-                else:
-                    cell_str = F"{cell}"
-                html += F"<td>{cell_str}</td>"
+                html += F"<td>{self.cell_to_html(cell)}</td>"
             html += "</tr>\n"
         html += "</table>"
         return html
