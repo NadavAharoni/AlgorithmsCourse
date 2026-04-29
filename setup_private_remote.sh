@@ -21,7 +21,8 @@ fi
 git fetch private
 
 if git show-ref --verify --quiet refs/heads/private; then
-    echo "Local branch 'private' already exists, skipping."
+    echo "Local branch 'private' already exists, setting upstream."
+    git branch --set-upstream-to=private/main private
 else
     git checkout -b private --track private/main
     echo "Local branch 'private' created, tracking private/main."
