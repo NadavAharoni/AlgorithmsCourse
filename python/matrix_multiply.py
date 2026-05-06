@@ -30,13 +30,15 @@ def main():
         sys.exit(1)
 
     A = read_matrix(sys.argv[1])
+    print(F"A.shape={A.shape}")
     B = read_matrix(sys.argv[2])
+    print(F"B.shape={B.shape}")
 
-    result_np = A @ B
-    print(F"result_np=\n{result_np}")
+    # result_np = A @ B
+    # print(F"result_np=\n{result_np}")
 
     result_naive, number_of_multiplications = matrix_multiply_naive(A, B)
-    print(F"result_naive=\n{result_naive}")
+    # print(F"result_naive=\n{result_naive}")
     print(F"number_of_multiplications={number_of_multiplications}")
 
 if __name__=='__main__':
