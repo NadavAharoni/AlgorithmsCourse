@@ -16,7 +16,8 @@ def write_frequencies(frequencies, output_path="frequencies.txt"):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("char,count\n")
         for char, count in frequencies.items():
-            f.write(f"{char},{count}\n")
+            display = char if char.isprintable() else repr(char)[1:-1]
+            f.write(f"{display},{count}\n")
 
 
 def main():

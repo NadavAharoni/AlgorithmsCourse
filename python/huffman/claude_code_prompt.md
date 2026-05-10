@@ -24,10 +24,15 @@ char,count
 ב,89
  ,300
 ,,100
+\n,45
+\t,3
 ```
 
-The last two lines in the example are for a space character and a comma character.
+The last four lines show: space (written as-is), comma (written as-is), newline, and tab.
 All characters must be included — spaces, punctuation, everything.
+Non-printable characters (as determined by `str.isprintable()`) must be written using
+their Python escape sequence (`\n`, `\t`, `\r`, etc.) instead of the literal character,
+so the output file stays readable. Space is printable and stays literal.
 The file should use `utf-8` encoding so Hebrew characters appear correctly.
 
 ## What's Already Done
@@ -53,7 +58,8 @@ def write_frequencies(frequencies, output_path="frequencies.txt"):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("char,count\n")
         for char, count in frequencies.items():
-            f.write(f"{char},{count}\n")
+            display = char if char.isprintable() else repr(char)[1:-1]
+            f.write(f"{display},{count}\n")
 
 
 def main():
@@ -73,5 +79,5 @@ if __name__ == "__main__":
 
 ## What I'd Like to Do Next
 
-> Replace this line with your next goal — e.g. sort the output by frequency,
-> accept a Wikipedia URL directly, add a histogram, integrate with a Huffman encoder, etc.
+> Possible next steps: sort the output by frequency (descending), accept a Wikipedia URL
+> directly, add a histogram, or integrate with a Huffman encoder.
