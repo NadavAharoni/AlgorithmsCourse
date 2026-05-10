@@ -16,6 +16,9 @@ def write_frequencies(frequencies, output_path="frequencies.txt"):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("char,count\n")
         for char, count in frequencies.items():
+            # For non-printable characters, we use repr to get a string representation (like '\n' for newline).
+            # Note: repr('\n') returns the string '\n' — including the surrounding single quotes
+            # which are part of the repr output. The [1:-1] strips those quote characters, leaving just \n.
             display = char if char.isprintable() else repr(char)[1:-1]
             f.write(f"{display},{count}\n")
 
