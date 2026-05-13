@@ -18,11 +18,14 @@ def read_frequencies(filepath):
             line = line.rstrip("\n")
             last_comma = line.rfind(",")
             char_repr = line[:last_comma]
+            # Unescape: convert escape sequences like \\n back to the real character.
+            # char_repr.encode("raw_unicode_escape").decode("unicode_escape")
+            # handles \n, \t, \r, etc. and works also for hebrew characters and other unicode.
+            actual_char =  \
+                  char_repr.encode("raw_unicode_escape").decode("unicode_escape")
+
             count = int(line[last_comma + 1:])
 
-            # Unescape: convert escape sequences like \\n back to the real character.
-            # encode().decode('unicode_escape') handles \n, \t, \r, etc.
-            actual_char = char_repr.encode("utf-8").decode("unicode_escape")
             frequencies[actual_char] = count
 
     return frequencies
