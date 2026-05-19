@@ -1,21 +1,18 @@
 import networkx as nx
 
-WHITE = 0
-GRAY  = 1
-BLACK = 2
-
-def dfs(graph, u, color):
-    color[u] = GRAY                    # discovered, on the stack
+def dfs(graph, u, visited):
+    visited.add(u)
     for v in graph.neighbors(u):
-        if color[v] == WHITE:
-            dfs(graph, v, color)
-        elif color[v] == GRAY:
-            print(f"back edge: {u} → {v}  (cycle!)")
-    color[u] = BLACK                   # finished
+        if v not in visited:
+            dfs(graph, v, visited)
 
 def dfs_all(graph):
-    color = {u: WHITE for u in graph.nodes()}
+    visited = set()
     for u in graph.nodes():
-        if color[u] == WHITE:
-            dfs(graph, u, color)
+        if u not in visited:
+            dfs(graph, u, visited)
 
+# Example usage:
+G = nx.Graph()
+G.add_edges_from([(0, 1), (0, 2), (1, 3), (2, 3), (3, 4)])
+dfs_all(G)
