@@ -51,7 +51,7 @@ def example1():
     print("Example1:")
     print("Nodes with discovery and finish times:")
     for node, info in nodes.items():
-        print(f"  {node}: disc={info['disc']}, finish={info['finish']}")
+        print(f"  {node}: parent={info['parent']}, disc={info['disc']}, finish={info['finish']}")
 
     print("Edges with types:")
     for u, v, edge_type in edges:
@@ -89,7 +89,7 @@ def example2():
     print("Example2:")
     print("Nodes with discovery and finish times:")
     for node, info in nodes.items():
-        print(f"  {node}: disc={info['disc']}, finish={info['finish']}")
+        print(f"  {node}: parent={info['parent']}, disc={info['disc']}, finish={info['finish']}")
     print("Edges with types:")
     for u, v, edge_type in edges:
         print(f"  ({u}, {v}): {edge_type}")
