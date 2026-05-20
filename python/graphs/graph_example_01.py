@@ -10,12 +10,14 @@ for node in G.nodes():
 for edge in G.edges():
     print(edge)
 
-exit()
+draw_with_plt = False
+if draw_with_plt:
+    # pos = nx.spring_layout(G, seed=42)
+    # pos = nx.spectral_layout(G)
+    # nx.draw(G, pos, with_labels=True)
+    nx.draw(G, with_labels=True)
+    plt.show()
 
-# pos = nx.spring_layout(G, seed=42)
-pos = nx.spectral_layout(G)
-nx.draw(G, pos, with_labels=True)
-plt.show()
 
 from pyvis.network import Network
 
