@@ -4,8 +4,9 @@ WHITE = 0
 GRAY  = 1
 BLACK = 2
 
-def dfs_enhanced(graph, u, color, time, nodes, edges):
+def dfs_enhanced(graph, u, color, time, nodes, edges, component):
     color[u] = GRAY
+    component.append(u)
     time[0] += 1
     nodes[u]['disc'] = time[0]
 
@@ -13,7 +14,7 @@ def dfs_enhanced(graph, u, color, time, nodes, edges):
         if color[v] == WHITE:
             nodes[v]['parent'] = u
             edges.append((u, v, 'tree'))
-            dfs_enhanced(graph, v, color, time, nodes, edges)
+            dfs_enhanced(graph, v, color, time, nodes, edges, component)
         elif color[v] == GRAY:
             edges.append((u, v, 'back'))
         elif color[v] == BLACK:
@@ -32,17 +33,20 @@ def dfs_enhanced_all(graph):
     nodes = {u: {'parent': None, 'disc': None, 'finish': None}
              for u in graph.nodes()}
     edges = []
+    components = []
 
     for u in graph.nodes():
         if color[u] == WHITE:
-            dfs_enhanced(graph, u, color, time, nodes, edges)
+            component = []
+            dfs_enhanced(graph, u, color, time, nodes, edges, component)
+            components.append(component)
 
-    return nodes, edges
+    return nodes, edges, components
 
 def example1():
     G = nx.Graph()
     G.add_edges_from([(0, 1), (0, 2), (1, 3), (2, 3), (3, 4)])
-    nodes, edges = dfs_enhanced_all(G)
+    nodes, edges, components = dfs_enhanced_all(G)
 
     print("Example1:")
     print("Nodes with discovery and finish times:")
@@ -52,6 +56,8 @@ def example1():
     print("Edges with types:")
     for u, v, edge_type in edges:
         print(f"  ({u}, {v}): {edge_type}")
+
+    print("Components:", components)
 
 
 def example2():
@@ -79,7 +85,7 @@ def example2():
     # Component 3: isolated island airport (single node, no routes)
     G.add_node('HNL')
 
-    nodes, edges = dfs_enhanced_all(G)
+    nodes, edges, components = dfs_enhanced_all(G)
     print("Example2:")
     print("Nodes with discovery and finish times:")
     for node, info in nodes.items():
@@ -87,6 +93,7 @@ def example2():
     print("Edges with types:")
     for u, v, edge_type in edges:
         print(f"  ({u}, {v}): {edge_type}")
+    print("Components:", components)
 
 
 if __name__ == "__main__":
