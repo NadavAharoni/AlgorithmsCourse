@@ -3,14 +3,14 @@ from collections import deque
 
 def bfs(graph, start):
     dist   = {start: 0}
-    parent = {start: None}       # ← add this
+    parent = {start: None}
     q = deque([start])
     while q:
         u = q.popleft()
         for v in graph.neighbors(u):
             if v not in dist:
                 dist[v]   = dist[u] + 1
-                parent[v] = u            # ← and this
+                parent[v] = u
                 q.append(v)
     return dist, parent
 
@@ -41,6 +41,7 @@ def reconstruct_path(parent, target):
 def example_usage():
     G = nx.DiGraph()
     G.add_edges_from([(0, 1), (0, 2), (1, 3), (2, 3), (3, 4)])
+    
     start = 0
     dist, parent = bfs(G, start)
     print("Distances:", dist)
