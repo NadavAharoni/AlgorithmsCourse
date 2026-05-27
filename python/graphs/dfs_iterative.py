@@ -1,4 +1,6 @@
 import networkx as nx
+import matplotlib.pyplot as plt
+from graph_to_svg import graph_to_svg
 
 def dfs(graph, start, visited, component):
     stack = [start]
@@ -56,6 +58,13 @@ def example2():
 
     components = dfs_all(G)
     print("Connected components:", components)
+
+    draw_with_plt = False
+    if draw_with_plt:
+        nx.draw(G, with_labels=True)
+        plt.show()
+
+    graph_to_svg(G, "airports.svg")
 
 if __name__ == "__main__":
     example1()
