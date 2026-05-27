@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 # G = nx.karate_club_graph()
 G = nx.petersen_graph()
 
-for node in G.nodes():
-    print(node)
+# for node in G.nodes():
+#     print(node)
 
-for edge in G.edges():
-    print(edge)
+# for edge in G.edges():
+#     print(edge)
 
 draw_with_plt = False
 if draw_with_plt:
