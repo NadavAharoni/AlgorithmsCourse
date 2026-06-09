@@ -2,6 +2,99 @@
 
 ---
 
+## Introduction to Encryption
+
+---
+
+### What is Encryption?
+
+**Plaintext:** the original message.  
+**Ciphertext:** the encrypted (scrambled) message.  
+**Key:** a value used to control the encryption and decryption.
+
+**Encryption:** `plaintext + key → ciphertext`  
+**Decryption:** `ciphertext + key → plaintext`
+
+The goal: anyone who intercepts the ciphertext cannot recover the plaintext without the key.
+
+---
+
+### Caesar Cipher (simplest example)
+
+Shift each letter by a fixed amount `k`.
+
+```
+plaintext:  HELLO
+k = 3
+ciphertext: KHOOR
+```
+
+```python
+def caesar_encrypt(text, k):
+    result = ""
+    for ch in text:
+        if ch.isalpha():
+            base = ord('A') if ch.isupper() else ord('a')
+            result += chr((ord(ch) - base + k) % 26 + base)
+        else:
+            result += ch
+    return result
+
+def caesar_decrypt(text, k):
+    return caesar_encrypt(text, -k)
+
+print(caesar_encrypt("HELLO", 3))   # KHOOR
+print(caesar_decrypt("KHOOR", 3))   # HELLO
+```
+
+**Problem:** Only 26 possible keys. Easy to brute-force.
+
+---
+
+### XOR Cipher
+
+XOR (`^`) is the building block of most modern encryption.
+
+**Key property:**
+```
+a XOR b XOR b = a
+```
+
+So: if `ciphertext = plaintext XOR key`, then `plaintext = ciphertext XOR key`.
+
+```python
+def xor_encrypt(text, key):
+    # key is repeated to match message length
+    return bytes([b ^ key[i % len(key)] for i, b in enumerate(text)])
+
+xor_decrypt = xor_encrypt   # same operation!
+
+key = b"secret"
+plaintext = b"Hello, world!"
+
+ciphertext = xor_encrypt(plaintext, key)
+recovered  = xor_decrypt(ciphertext, key)
+
+print(ciphertext)          # garbled bytes
+print(recovered)           # b'Hello, world!'
+```
+
+**Problem:** If the key is shorter than the message (and reused), patterns emerge and the cipher can be broken. A one-time pad (key as long as the message, used once) is theoretically unbreakable — but impractical.
+
+---
+
+### What Makes a Good Cipher?
+
+- **Confusion:** each bit of the ciphertext should depend on many bits of the key (XOR alone is weak here).
+- **Diffusion:** changing one bit of the plaintext should change ~half the ciphertext bits.
+- **Key space:** the number of possible keys must be astronomically large.
+
+Modern symmetric ciphers like **AES** achieve all three. AES operates on 128-bit blocks with 128/192/256-bit keys, and applies multiple rounds of substitution and permutation.
+
+We won't implement AES — the details are complex and not the focus — but we will use it via Python's `cryptography` library.
+
+---
+
 ## Session 1: Modular Arithmetic + Diffie-Hellman
 
 ---
@@ -118,6 +211,99 @@ print(bob_secret)     # 2  <- same!
 ```
 
 **Limitation:** DH establishes a *shared secret*, but does not encrypt messages by itself, and does not authenticate who you are talking to (man-in-the-middle attack is possible without authentication).
+
+---
+
+### From DH Shared Secret to Encrypting a Message
+
+DH gives Alice and Bob a shared integer `s`. To actually encrypt a message they need to:
+
+1. **Derive a proper key** from `s` — the raw integer is not suitable directly as an AES key.
+2. **Encrypt with AES** (or another symmetric cipher) using that derived key.
+
+**Step 1: Key Derivation**
+
+Use a hash function to turn `s` into a fixed-size key.
+SHA-256 produces 32 bytes = 256 bits, which is a valid AES-256 key.
+
+```python
+import hashlib
+
+def derive_key(shared_secret_int):
+    # Convert integer to bytes, then hash
+    secret_bytes = shared_secret_int.to_bytes(
+        (shared_secret_int.bit_length() + 7) // 8, byteorder='big'
+    )
+    return hashlib.sha256(secret_bytes).digest()   # 32 bytes
+```
+
+**Step 2: Encrypt with AES**
+
+AES requires a mode of operation. AES-GCM is standard — it provides both encryption and authentication.
+
+```python
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import os
+
+def encrypt_message(key_bytes, plaintext: str) -> tuple:
+    aesgcm = AESGCM(key_bytes)
+    nonce = os.urandom(12)                          # 96-bit random nonce, sent with ciphertext
+    ciphertext = aesgcm.encrypt(nonce, plaintext.encode(), None)
+    return nonce, ciphertext
+
+def decrypt_message(key_bytes, nonce: bytes, ciphertext: bytes) -> str:
+    aesgcm = AESGCM(key_bytes)
+    return aesgcm.decrypt(nonce, ciphertext, None).decode()
+```
+
+**Full DH + AES example:**
+
+```python
+import hashlib, os
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+def mod_exp(base, exp, mod):
+    result = 1
+    base = base % mod
+    while exp > 0:
+        if exp % 2 == 1:
+            result = (result * base) % mod
+        exp //= 2
+        base = (base * base) % mod
+    return result
+
+# Public parameters
+p = 0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74  # large prime (RFC 3526)
+g = 2
+
+# Alice and Bob pick private keys
+a = int.from_bytes(os.urandom(32), 'big') % p
+b = int.from_bytes(os.urandom(32), 'big') % p
+
+# Exchange public values
+A = mod_exp(g, a, p)
+B = mod_exp(g, b, p)
+
+# Compute shared secret
+alice_secret = mod_exp(B, a, p)
+bob_secret   = mod_exp(A, b, p)
+assert alice_secret == bob_secret
+
+# Derive AES key
+alice_key = hashlib.sha256(alice_secret.to_bytes(256, 'big')).digest()
+bob_key   = hashlib.sha256(bob_secret.to_bytes(256, 'big')).digest()
+
+# Alice encrypts
+aesgcm = AESGCM(alice_key)
+nonce = os.urandom(12)
+ciphertext = aesgcm.encrypt(nonce, b"Hello Bob!", None)
+
+# Bob decrypts
+plaintext = AESGCM(bob_key).decrypt(nonce, ciphertext, None)
+print(plaintext)   # b'Hello Bob!'
+```
+
+**Note on the nonce:** The nonce does not need to be secret — it is sent alongside the ciphertext. It must never be reused with the same key. Its purpose is to ensure that encrypting the same message twice produces different ciphertexts.
 
 ---
 
